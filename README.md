@@ -50,6 +50,9 @@ open powershell and run: `(Invoke-WebRequest -Uri https://install.python-poetry.
 ## Development
 
 ### Dev Setup
+
+Setup basic `.env` for development: `cp .env.template .env`
+
 Install dependencies: `poetry install`
 
 Install the defined pre-commit hooks: `poetry run pre-commit install`

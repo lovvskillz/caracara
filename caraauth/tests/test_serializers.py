@@ -6,12 +6,29 @@ from caraauth.serializers import RegisterSerializer
 
 
 @mark.django_db
-@mark.parametrize('username_length', (4, 65))
-def test__register_serializer__username_length_out_of_range(username_length):
+@mark.parametrize(
+    'username_length, error',
+    [
+        (
+            4,
+            ErrorDetail(
+                string='Ensure this field has at least 5 characters.', code='min_length'
+            ),
+        ),
+        (
+            65,
+            ErrorDetail(
+                string='Ensure this field has no more than 64 characters.',
+                code='max_length',
+            ),
+        ),
+    ],
+)
+def test__register_serializer__username_length_out_of_range(username_length, error):
     """
     Ensure that a username needs to contain between 5 and 64 chars.
     """
-    username = get_random_string(4)
+    username = get_random_string(username_length)
     serializer = RegisterSerializer(
         data={
             'username': username,
@@ -20,17 +37,7 @@ def test__register_serializer__username_length_out_of_range(username_length):
         }
     )
     assert not serializer.is_valid()
-    assert serializer.errors == {
-        'username': [
-            ErrorDetail(
-                string=(
-                    "Enter a valid username. This value may contain only letters,"
-                    " numbers, _ characters and should be at least 5 characters long."
-                ),
-                code='invalid',
-            )
-        ]
-    }
+    assert serializer.errors == {'username': [error]}
 
 
 @mark.django_db

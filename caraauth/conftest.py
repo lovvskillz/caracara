@@ -7,9 +7,9 @@ class UserFactory(DjangoModelFactory):
         model = 'caraauth.User'
 
     username = 'some_user'
-    is_admin = False
+    is_superuser = False
 
 
 @fixture
 def admin_user():
-    return UserFactory.create(is_admin=True)
+    return UserFactory.create(is_superuser=True)

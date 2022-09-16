@@ -19,6 +19,7 @@ env = environ.Env(
     SECRET_KEY=(str, None),
     ACCESS_TOKEN_LIFETIME=(int, 5),
     REFRESH_TOKEN_LIFETIME=(int, 60 * 24),  # 1 day
+    OTP_TOTP_ISSUER=(str, None),
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -53,6 +54,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
     'caraauth.apps.CaraauthConfig',
 ]
 
@@ -62,6 +67,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -167,3 +173,7 @@ SIMPLE_JWT = {
     'TOKEN_TYPE_CLAIM': 'token_type',
     'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
 }
+
+# 2FA Settings
+
+OTP_TOTP_ISSUER = env('OTP_TOTP_ISSUER')

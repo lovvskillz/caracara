@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
+from rest_framework import fields, serializers
 from rest_framework.validators import UniqueValidator
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from caraauth.models import User
 from caraauth.validators import UsernameValidator
@@ -17,10 +18,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields
-
     class Meta:
         model = get_user_model()
         fields = ['email', 'username', 'password']
@@ -57,3 +54,13 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         attrs['user'] = self.create(attrs)
         return attrs
+
+
+class LoginSerializer(TokenObtainPairSerializer):
+    # TODO: add 2FA functionality
+    otp_token = fields.CharField(
+        max_length=8, required=False, allow_blank=True, write_only=True
+    )
+
+    def validate(self, attrs):
+        return super().validate(attrs)

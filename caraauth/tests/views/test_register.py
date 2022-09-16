@@ -1,9 +1,10 @@
+from django.contrib.auth import get_user_model
 from pytest import mark
 from rest_framework import status
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.reverse import reverse
 
-from caraauth.conftest import UserFactory
+from conftest import UserFactory
 
 REGISTER_URL = reverse('auth:register')
 VALID_USER_DATA = {
@@ -18,6 +19,7 @@ def test_user_data_is_valid(webtest):
     """
     Ensure that a new user can be created with valid data.
     """
+    assert get_user_model().objects.count() == 0
     response = webtest.post(REGISTER_URL, data=VALID_USER_DATA)
 
     assert response.status_code == status.HTTP_200_OK
@@ -25,6 +27,7 @@ def test_user_data_is_valid(webtest):
     assert response.data['username'] == 'new_user'
     assert 'access' in response.data
     assert 'refresh' in response.data
+    assert get_user_model().objects.count() == 1
 
 
 @mark.django_db
@@ -34,6 +37,7 @@ def test__no_data_submitted(webtest):
     """
     response = webtest.post(REGISTER_URL, data={})
 
+    assert get_user_model().objects.count() == 0
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data == {
         'email': [ErrorDetail(string='This field is required.', code='required')],
@@ -55,6 +59,7 @@ def test__invalid_field_data(webtest):
 
     response = webtest.post(REGISTER_URL, data=invalid_data)
 
+    assert get_user_model().objects.count() == 0
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data == {
         'email': [ErrorDetail(string='Enter a valid email address.', code='invalid')],
@@ -99,6 +104,7 @@ def test__duplicated_user_data(webtest, username, email, duplicated_field):
 
     response = webtest.post(REGISTER_URL, data=VALID_USER_DATA)
 
+    assert get_user_model().objects.count() == 1
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data == {
         duplicated_field: [

@@ -12,13 +12,13 @@ from caraauth.serializers import RegisterSerializer
         (
             4,
             ErrorDetail(
-                string='Ensure this field has at least 5 characters.', code='min_length'
+                string="Ensure this field has at least 5 characters.", code='min_length'
             ),
         ),
         (
             65,
             ErrorDetail(
-                string='Ensure this field has no more than 64 characters.',
+                string="Ensure this field has no more than 64 characters.",
                 code='max_length',
             ),
         ),

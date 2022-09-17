@@ -15,12 +15,12 @@ VALID_USER_DATA = {
 
 
 @mark.django_db
-def test_user_data_is_valid(webtest):
+def test_user_data_is_valid(apitest):
     """
     Ensure that a new user can be created with valid data.
     """
     assert get_user_model().objects.count() == 0
-    response = webtest.post(REGISTER_URL, data=VALID_USER_DATA)
+    response = apitest().post(REGISTER_URL, data=VALID_USER_DATA)
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data['email'] == 'new.user@example.com'
@@ -31,23 +31,23 @@ def test_user_data_is_valid(webtest):
 
 
 @mark.django_db
-def test__no_data_submitted(webtest):
+def test__no_data_submitted(apitest):
     """
     Don't create a user if no data is submitted.
     """
-    response = webtest.post(REGISTER_URL, data={})
+    response = apitest().post(REGISTER_URL, data={})
 
     assert get_user_model().objects.count() == 0
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data == {
-        'email': [ErrorDetail(string='This field is required.', code='required')],
-        'username': [ErrorDetail(string='This field is required.', code='required')],
-        'password': [ErrorDetail(string='This field is required.', code='required')],
+        'email': [ErrorDetail(string="This field is required.", code='required')],
+        'username': [ErrorDetail(string="This field is required.", code='required')],
+        'password': [ErrorDetail(string="This field is required.", code='required')],
     }
 
 
 @mark.django_db
-def test__invalid_field_data(webtest):
+def test__invalid_field_data(apitest):
     """
     Don't create a user with invalid data on any field.
     """
@@ -57,17 +57,17 @@ def test__invalid_field_data(webtest):
         'password': 'short',
     }
 
-    response = webtest.post(REGISTER_URL, data=invalid_data)
+    response = apitest().post(REGISTER_URL, data=invalid_data)
 
     assert get_user_model().objects.count() == 0
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data == {
-        'email': [ErrorDetail(string='Enter a valid email address.', code='invalid')],
+        'email': [ErrorDetail(string="Enter a valid email address.", code='invalid')],
         'username': [
             ErrorDetail(
                 string=(
-                    'Enter a valid username. This value may contain only letters,'
-                    ' numbers, _ characters and should be at least 5 characters long.'
+                    "Enter a valid username. This value may contain only letters,"
+                    " numbers, _ characters and should be at least 5 characters long."
                 ),
                 code='invalid',
             )
@@ -75,8 +75,8 @@ def test__invalid_field_data(webtest):
         'password': [
             ErrorDetail(
                 string=(
-                    'Enter a valid password. Should be at least 8 characters long'
-                    ' containing letters and numbers.'
+                    "Enter a valid password. Should be at least 8 characters long"
+                    " containing letters and numbers."
                 ),
                 code='invalid',
             )
@@ -94,7 +94,7 @@ def test__invalid_field_data(webtest):
     ],
 )
 @mark.django_db
-def test__duplicated_user_data(webtest, username, email, duplicated_field):
+def test__duplicated_user_data(apitest, username, email, duplicated_field):
     """
     Ensure users with duplicated username or email can't be created.
     """
@@ -102,12 +102,12 @@ def test__duplicated_user_data(webtest, username, email, duplicated_field):
         username=username, email=email, password=VALID_USER_DATA['password']
     )
 
-    response = webtest.post(REGISTER_URL, data=VALID_USER_DATA)
+    response = apitest().post(REGISTER_URL, data=VALID_USER_DATA)
 
     assert get_user_model().objects.count() == 1
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data == {
         duplicated_field: [
-            ErrorDetail(string='This field must be unique.', code='unique')
+            ErrorDetail(string="This field must be unique.", code='unique')
         ]
     }

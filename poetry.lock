@@ -282,6 +282,17 @@ pycodestyle = ">=2.9.0,<2.10.0"
 pyflakes = ">=2.5.0,<2.6.0"
 
 [[package]]
+name = "freezegun"
+version = "1.2.2"
+description = "Let your Python tests travel through time"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+python-dateutil = ">=2.7"
+
+[[package]]
 name = "identify"
 version = "2.5.5"
 description = "File identification library for Python"
@@ -572,6 +583,18 @@ pytest = ">=5.0.0"
 typing_extensions = "*"
 
 [[package]]
+name = "pytest-freezegun"
+version = "0.4.2"
+description = "Wrap tests with fixtures in freeze_time"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+freezegun = ">0.3"
+pytest = ">=3.0.0"
+
+[[package]]
 name = "python-dateutil"
 version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
@@ -713,7 +736,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "d0d48e0c7d2560dccc404f60b180b14fa578ef63c2e754bfae6230a5dcf8ce25"
+content-hash = "b43f9f491e7a8e0d4b59e0f9099900e7769e20a60b1f5a0d88d2cf8d1b7c746c"
 
 [metadata.files]
 asgiref = [
@@ -820,6 +843,10 @@ filelock = [
 flake8 = [
     {file = "flake8-5.0.4-py2.py3-none-any.whl", hash = "sha256:7a1cf6b73744f5806ab95e526f6f0d8c01c66d7bbe349562d22dfca20610b248"},
     {file = "flake8-5.0.4.tar.gz", hash = "sha256:6fbe320aad8d6b95cec8b8e47bc933004678dc63095be98528b7bdd2a9f510db"},
+]
+freezegun = [
+    {file = "freezegun-1.2.2-py3-none-any.whl", hash = "sha256:ea1b963b993cb9ea195adbd893a48d573fda951b0da64f60883d7e988b606c9f"},
+    {file = "freezegun-1.2.2.tar.gz", hash = "sha256:cd22d1ba06941384410cd967d8a99d5ae2442f57dfafeff2fda5de8dc5c05446"},
 ]
 identify = [
     {file = "identify-2.5.5-py2.py3-none-any.whl", hash = "sha256:ef78c0d96098a3b5fe7720be4a97e73f439af7cf088ebf47b620aeaa10fadf97"},
@@ -955,6 +982,10 @@ pytest-django = [
 pytest-factoryboy = [
     {file = "pytest-factoryboy-2.5.0.tar.gz", hash = "sha256:8abcfe5396a2cadf0b2d6fc1ba607d05f191db915eac95733ab741cb30968a46"},
     {file = "pytest_factoryboy-2.5.0-py3-none-any.whl", hash = "sha256:37c6b3a17689b197025260ad06047d0dd8ec54a70556995b22617e9df1fd8797"},
+]
+pytest-freezegun = [
+    {file = "pytest-freezegun-0.4.2.zip", hash = "sha256:19c82d5633751bf3ec92caa481fb5cffaac1787bd485f0df6436fd6242176949"},
+    {file = "pytest_freezegun-0.4.2-py2.py3-none-any.whl", hash = "sha256:5318a6bfb8ba4b709c8471c94d0033113877b3ee02da5bfcd917c1889cde99a7"},
 ]
 python-dateutil = [
     {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},

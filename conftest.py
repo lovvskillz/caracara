@@ -1,7 +1,9 @@
+from datetime import timedelta
+
+from durin.models import AuthToken, Client
 from factory.django import DjangoModelFactory
 from pytest import fixture
 from rest_framework.test import APIClient
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from caraauth.models import User
 
@@ -26,7 +28,12 @@ def admin_user() -> User:
 
 
 @fixture
-def apitest():
+def web_client():
+    return Client.objects.get_or_create(name='web', token_ttl=timedelta(days=1))[0]
+
+
+@fixture
+def apitest(web_client):
     """
     Return API client.
     """
@@ -36,9 +43,14 @@ def apitest():
         Return API client with optional authorization header if user is set.
         """
         api_client = APIClient()
+        headers = {'HTTP_X_API_CLIENT': web_client.name}
         if user:
-            token = RefreshToken.for_user(user)
-            api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {token.access_token}')
+            try:
+                token = AuthToken.objects.get(user=user, client=web_client)
+            except AuthToken.DoesNotExist:
+                token = AuthToken.objects.create(user=user, client=web_client)
+            headers['HTTP_AUTHORIZATION'] = f'Bearer {token.token}'
+        api_client.credentials(**headers)
         return api_client
 
     return _auth

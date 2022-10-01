@@ -23,10 +23,12 @@ def test_user_data_is_valid(apitest):
     response = apitest().post(REGISTER_URL, data=VALID_USER_DATA)
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data['email'] == 'new.user@example.com'
-    assert response.data['username'] == 'new_user'
-    assert 'access' in response.data
-    assert 'refresh' in response.data
+    assert response.data['user'] == {
+        'email': 'new.user@example.com',
+        'username': 'new_user',
+    }
+    assert 'token' in response.data
+    assert 'expiry' in response.data
     assert get_user_model().objects.count() == 1
 
 

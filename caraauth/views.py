@@ -1,36 +1,41 @@
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from typing import TYPE_CHECKING
 
+from durin.models import AuthToken
+from durin.views import RefreshView
+from rest_framework.permissions import IsAuthenticated
+
+from caraauth.mixins import AuthMixin
 from caraauth.permissions import IsAnonymous
-from caraauth.serializers import RegisterSerializer
+from caraauth.serializers import LoginSerializer, RegisterSerializer
+
+if TYPE_CHECKING:
+    from durin.models import Client
 
 
-class RegisterView(APIView):
+class RegisterView(AuthMixin):
     """
     Register a new user.
     """
 
     permission_classes = (IsAnonymous,)
+    serializer_class = RegisterSerializer
 
-    def post(self, request, *args, **kwargs) -> Response:
-        register_serializer = RegisterSerializer(data=request.data)
-        register_serializer.is_valid(raise_exception=True)
-        token = TokenObtainPairSerializer(data=register_serializer.validated_data)
-        token.is_valid(raise_exception=True)
-        return Response(data={**register_serializer.data, **token.validated_data})
+    def get_token_obj(self, request, client: 'Client') -> 'AuthToken':
+        return AuthToken.objects.create(request.user, client)
 
 
-class LoginView(TokenObtainPairView):
+class LoginView(AuthMixin):
     """
     Authenticate a user.
     """
 
     permission_classes = (IsAnonymous,)
+    serializer_class = LoginSerializer
 
 
-class JWTokenRefreshView(TokenRefreshView):
+class TokenRefreshView(RefreshView):
     """
     Refresh the token for the authenticated user.
     """
+
+    permission_classes = (IsAuthenticated,)

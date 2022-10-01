@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
+from durin.models import AuthToken
 from pytest import fixture, mark
 from rest_framework import status
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.reverse import reverse
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 LOGIN_URL = reverse('auth:login')
 user_data = {
@@ -22,25 +22,26 @@ def user():
     'username_or_email', [user_data.get('username'), user_data.get('email')]
 )
 @mark.django_db
-def test__with_valid_data(apitest, user, username_or_email):
+def test__with_valid_data(apitest, user, username_or_email, web_client):
     """
     Ensure that login works with valid user data.
     """
     data = {'username': username_or_email, 'password': user_data.get('password')}
 
     response = apitest().post(LOGIN_URL, data=data)
+    token = AuthToken.objects.get(user=user, client=web_client)
 
     assert response.status_code == status.HTTP_200_OK
-    assert 'refresh' in response.data
-    assert JWTAuthentication().get_validated_token(response.data['access'])
+    assert 'expiry' in response.data
+    assert response.data['token'] == token.token
 
 
 @mark.parametrize(
     'username_or_email, password',
     [
-        ('user_not_found', 'some-password'),
-        (user_data.get('username'), 'password-is-wrong'),
-        (user_data.get('email'), 'password-is-wrong'),
+        ('user_not_found', 's0me-password'),
+        (user_data.get('username'), 'password-1s-wrong'),
+        (user_data.get('email'), 'password-1s-wrong'),
     ],
 )
 @mark.django_db
@@ -52,10 +53,15 @@ def test__with_invalid_data(apitest, user, username_or_email, password):
 
     response = apitest().post(LOGIN_URL, data=data)
 
-    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data == {
-        'detail': ErrorDetail(
-            string="No active account found with the given credentials",
-            code='no_active_account',
-        )
+        'non_field_errors': [
+            ErrorDetail(
+                string=(
+                    "No account was found with this username / email address and"
+                    " password!"
+                ),
+                code='authorization',
+            )
+        ]
     }

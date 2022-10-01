@@ -1,71 +1,68 @@
+from django.utils import timezone
+from durin.models import AuthToken
 from pytest import mark
 from rest_framework import status
 from rest_framework.exceptions import ErrorDetail
+from rest_framework.fields import DateTimeField
 from rest_framework.reverse import reverse
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework_simplejwt.tokens import RefreshToken
 
 REFRESH_URL = reverse('auth:refresh')
 
 
 @mark.django_db
-def test_refresh_token(apitest, user):
+def test_refresh_token(apitest, user, web_client, freezer):
     """
     Ensure that users with valid refresh token can obtain a new access token.
     """
-    token = RefreshToken.for_user(user)
+    freezer.move_to('2022-09-01')
+    expiry = timezone.now() + web_client.token_ttl
+    new_expired_datetime = DateTimeField().to_representation(expiry)
 
-    response = apitest().post(REFRESH_URL, data={'refresh': str(token)})
+    response = apitest(user).post(REFRESH_URL)
 
     assert response.status_code == status.HTTP_200_OK
-    assert 'refresh' in response.data
-    assert JWTAuthentication().get_validated_token(response.data['access'])
+    assert response.data['expiry'] == new_expired_datetime
 
 
 @mark.django_db
-def test_refresh_token_required(apitest):
+def test_refresh_token__not_authenticated(apitest):
     """
-    Ensure that refresh token is required.
+    Ensure that users need to be authenticated to refresh token.
     """
     response = apitest().post(REFRESH_URL)
 
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.data['refresh'] == [
-        ErrorDetail(string="This field is required.", code='required')
-    ]
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 @mark.django_db
-def test_refresh_token_is_invalid(apitest):
+def test_refresh_token__is_invalid(apitest, user):
     """
-    Ensure that an invalid refresh token will not return an access token.
+    Ensure that an invalid token will not return an access token.
     """
-    response = apitest().post(REFRESH_URL, data={'refresh': 'invalid'})
+    apitest = apitest(user)
+    apitest._credentials['HTTP_AUTHORIZATION'] = 'Bearer invalidtoken123'
+    response = apitest.post(REFRESH_URL)
 
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     assert response.data == {
-        'detail': ErrorDetail(
-            string="Token is invalid or expired", code='token_not_valid'
-        ),
-        'code': ErrorDetail(string='token_not_valid', code='token_not_valid'),
+        'detail': ErrorDetail(string="Invalid token.", code='authentication_failed')
     }
 
 
 @mark.django_db
-def test_refresh_token_is_expired(apitest, user, freezer):
+def test_refresh_token__is_expired(apitest, user, web_client, freezer):
     """
     Ensure that an expired refresh token will not return an access token.
     """
     freezer.move_to('2022-09-01')
-    token = RefreshToken.for_user(user)
+    AuthToken.objects.create(user=user, client=web_client)
     freezer.move_to('2022-09-30')  # refresh token should be invalid
 
-    response = apitest().post(REFRESH_URL, data={'refresh': str(token)})
+    response = apitest(user).post(REFRESH_URL)
 
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     assert response.data == {
         'detail': ErrorDetail(
-            string="Token is invalid or expired", code='token_not_valid'
-        ),
-        'code': ErrorDetail(string='token_not_valid', code='token_not_valid'),
+            string="The given token has expired.", code='authentication_failed'
+        )
     }

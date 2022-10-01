@@ -10,8 +10,8 @@ python = "^3.10"
 Django = "^4.1.1"
 django-environ = "^0.9.0"
 djangorestframework = "^3.13.1"
-djangorestframework-simplejwt = "^5.2.0"
 django-two-factor-auth = {extras = ["phonenumberslite"], version = "^1.14.0"}
+django-rest-durin = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest-django = "^4.5.2"

@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_otp import user_has_device
 
 from caraauth import validators
 
@@ -29,8 +30,12 @@ class User(AbstractUser):
         _("password"),
         max_length=128,
         help_text=_(
-            "Required. Need to have at least 8 characters containing letters and"
-            " digits."
+            "Required. Need to have at least 8 characters containing letters and "
+            "digits."
         ),
         validators=[password_validator],
     )
+
+    @property
+    def has_2fa_enabled(self):
+        return user_has_device(self)

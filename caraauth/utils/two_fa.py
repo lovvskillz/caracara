@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, List, Optional, Union
 
+from django.db.models import QuerySet
 from django_otp import devices_for_user
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -37,10 +38,10 @@ def confirm_totp_device_token(user: 'User', token: str) -> bool:
     """
     Return weather the token is valid for a TOTP device.
     """
-    device = get_user_totp_device(user, True)
+    device = get_user_totp_device(user, confirmed=True)
     if not device:
         return False
-    verify_is_allowed, reason = device.verify_is_allowed()
+    verify_is_allowed = device.verify_is_allowed()[0]
     if not verify_is_allowed:
         return False
     if device.verify_token(token):
@@ -109,7 +110,7 @@ def create_static_device(user: 'User') -> List[bytes]:
     return tokens
 
 
-def get_static_device_tokens(user: 'User'):
+def get_static_device_tokens(user: 'User') -> Union['QuerySet', list]:
     """
     Return tokens for a user's static device.
     """
@@ -119,7 +120,7 @@ def get_static_device_tokens(user: 'User'):
     return []
 
 
-def confirm_any_device_token(user, token) -> bool:
+def confirm_any_device_token(user: 'User', token: str) -> bool:
     """
     Return weather the token is valid for a TOTP or a static device.
     """

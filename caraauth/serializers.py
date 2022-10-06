@@ -80,7 +80,6 @@ class LoginSerializer(serializers.ModelSerializer):
         label=_("Username or email address"), max_length=254
     )
     otp_token = fields.CharField(
-        max_length=8,
         required=False,
         allow_blank=True,
         write_only=True,
@@ -97,7 +96,7 @@ class LoginSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         username_or_email = attrs.get('username')
         password = attrs.get('password')
-        token = attrs.get('otp_token')
+        token = attrs.get('otp_token', '')
         user = authenticate(
             self.context.get('request'), username=username_or_email, password=password
         )
@@ -111,7 +110,7 @@ class LoginSerializer(serializers.ModelSerializer):
             )
         if user.has_2fa_enabled and not confirm_any_device_token(user, token):
             raise serializers.ValidationError(
-                detail={'token': _("Token is not valid")}, code='authorization'
+                detail={'otp_token': _("Token is not valid")}, code='authorization'
             )
         attrs['user'] = user
         return attrs

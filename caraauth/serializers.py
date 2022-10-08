@@ -1,11 +1,13 @@
 from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth.hashers import make_password
 from django.utils.translation import gettext_lazy as _
 from rest_framework import fields, serializers
+from rest_framework.exceptions import ValidationError
 from rest_framework.validators import UniqueValidator
 
 from caraauth.models import User
 from caraauth.utils.two_fa import confirm_any_device_token
-from caraauth.validators import UsernameValidator
+from caraauth.validators import PasswordValidator, UsernameValidator
 
 
 def token_length_validator(token: str):
@@ -26,13 +28,39 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    """ """
 
-    new_password = fields.CharField(read_only=True)
+    new_password = fields.CharField(
+        write_only=True, validators=[PasswordValidator()], required=False
+    )
+    confirm_new_password = fields.CharField(
+        write_only=True, validators=[PasswordValidator()], required=False
+    )
 
     class Meta:
         model = get_user_model()
-        fields = ['email', 'username', 'new_password', 'has_2fa_enabled']
+        fields = [
+            'email',
+            'username',
+            'has_2fa_enabled',
+            'new_password',
+            'confirm_new_password',
+        ]
+
+    def validate(self, attrs):
+        """
+        Run additional validations for user profile data.
+        """
+        attrs = super().validate(attrs)
+        if self._validate_new_password(attrs):
+            attrs['password'] = make_password(attrs.get('new_password'))
+        return attrs
+
+    def _validate_new_password(self, attrs):
+        if not (new_password := attrs.get('new_password')):
+            return
+        if new_password != attrs.get('confirm_new_password'):
+            raise ValidationError({'new_password': _("New password does not match!")})
+        return True
 
 
 class RegisterSerializer(serializers.ModelSerializer):

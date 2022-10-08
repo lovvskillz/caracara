@@ -2,7 +2,7 @@ from django.utils.crypto import get_random_string
 from pytest import mark
 from rest_framework.exceptions import ErrorDetail
 
-from caraauth.serializers import RegisterSerializer
+from caraauth.serializers import RegisterSerializer, UserProfileSerializer
 
 
 @mark.django_db
@@ -83,3 +83,30 @@ def test__register_serializer__valid_username(valid_username):
         }
     )
     assert serializer.is_valid()
+
+
+@mark.django_db
+def test__user_profile_serializer__new_password_validation(user):
+    user_data = user.get_profile_as_dict()
+    user_data['new_password'] = 'S3cretNewPassword'
+    user_data['confirm_new_password'] = 'S3cretNewPassword'
+
+    profile_serializer = UserProfileSerializer(instance=user, data=user_data)
+
+    assert profile_serializer.is_valid()
+
+
+@mark.django_db
+def test__user_profile_serializer__different_new_password(user):
+    user_data = user.get_profile_as_dict()
+    user_data['new_password'] = 'S3cretNewPassword'
+    user_data['confirm_new_password'] = 'N0tTheSamePassword'
+
+    profile_serializer = UserProfileSerializer(instance=user, data=user_data)
+
+    assert not profile_serializer.is_valid()
+    assert profile_serializer.errors == {
+        'new_password': [
+            ErrorDetail(string="New password does not match!", code='invalid')
+        ]
+    }

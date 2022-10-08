@@ -1,8 +1,10 @@
 from typing import TYPE_CHECKING
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator
 from django.db import models
+from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 from django_otp import user_has_device
 
@@ -53,3 +55,9 @@ class User(AbstractUser):
         if not (device := get_user_totp_device(self)):
             device = self.totpdevice_set.create(confirmed=confirmed, name='default')
         return device
+
+    def get_profile_as_dict(self):
+        """
+        Return user instance as serialized data.
+        """
+        return import_string(settings.USER_SERIALIZER)(instance=self).data

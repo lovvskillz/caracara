@@ -13,6 +13,7 @@ class UserFactory(DjangoModelFactory):
         model = 'caraauth.User'
 
     username = 'some_user'
+    email = 'some.user@example.com'
     is_superuser = False
     is_active = True
 

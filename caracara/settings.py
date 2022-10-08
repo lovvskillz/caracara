@@ -148,6 +148,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'caraauth.User'
+USER_SERIALIZER = 'caraauth.serializers.UserSerializer'
 
 AUTHENTICATION_BACKENDS = ['caraauth.backends.UsernameOrEmailModelBackend']
 
@@ -167,7 +168,7 @@ REST_FRAMEWORK = {
 REST_DURIN = {
     'DEFAULT_TOKEN_TTL': timedelta(days=env('TOKEN_LIFETIME')),
     'AUTH_HEADER_PREFIX': 'Bearer',
-    'USER_SERIALIZER': 'caraauth.serializers.UserSerializer',
+    'USER_SERIALIZER': USER_SERIALIZER,
 }
 
 # 2FA Settings

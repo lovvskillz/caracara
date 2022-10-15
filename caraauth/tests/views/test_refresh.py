@@ -1,5 +1,6 @@
 from django.utils import timezone
 from durin.models import AuthToken
+from freezegun import freeze_time
 from pytest import mark
 from rest_framework import status
 from rest_framework.exceptions import ErrorDetail
@@ -9,12 +10,12 @@ from rest_framework.reverse import reverse
 REFRESH_URL = reverse('auth:refresh')
 
 
+@freeze_time('2022-09-01')
 @mark.django_db
-def test_refresh_token(apitest, user, web_client, freezer):
+def test_refresh_token(apitest, user, web_client):
     """
     Ensure that users with valid refresh token can obtain a new access token.
     """
-    freezer.move_to('2022-09-01')
     expiry = timezone.now() + web_client.token_ttl
     new_expired_datetime = DateTimeField().to_representation(expiry)
 
@@ -50,15 +51,15 @@ def test_refresh_token__is_invalid(apitest, user):
 
 
 @mark.django_db
-def test_refresh_token__is_expired(apitest, user, web_client, freezer):
+def test_refresh_token__is_expired(apitest, user, web_client):
     """
     Ensure that an expired refresh token will not return an access token.
     """
-    freezer.move_to('2022-09-01')
-    AuthToken.objects.create(user=user, client=web_client)
-    freezer.move_to('2022-09-30')  # refresh token should be invalid
+    with freeze_time('2022-09-01'):
+        AuthToken.objects.create(user=user, client=web_client)
 
-    response = apitest(user).post(REFRESH_URL)
+    with freeze_time('2022-09-30'):  # refresh token should be invalid
+        response = apitest(user).post(REFRESH_URL)
 
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     assert response.data == {

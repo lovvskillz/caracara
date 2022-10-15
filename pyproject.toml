@@ -22,7 +22,7 @@ pylint = "^2.15.0"
 pylint-django = "^2.5.3"
 flake8 = "^5.0.4"
 pytest-factoryboy = "^2.5.0"
-pytest-freezegun = "^0.4.2"
+freezegun = "^1.2.2"
 
 [tool.black]
 line-length = 88

@@ -9,7 +9,12 @@ from django.utils.translation import gettext_lazy as _
 from django_otp import user_has_device
 
 from caraauth import validators
-from caraauth.utils.two_fa import get_user_totp_device
+from caraauth.utils.two_fa import (
+    confirm_any_device_token,
+    create_static_device,
+    get_user_totp_device,
+    verify_totp_device,
+)
 
 if TYPE_CHECKING:
     from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -44,6 +49,12 @@ class User(AbstractUser):
         validators=[password_validator],
     )
 
+    def get_profile_as_dict(self):
+        """
+        Return user instance as serialized data.
+        """
+        return import_string(settings.USER_SERIALIZER)(instance=self).data
+
     @property
     def has_2fa_enabled(self):
         return user_has_device(self)
@@ -56,8 +67,20 @@ class User(AbstractUser):
             device = self.totpdevice_set.create(confirmed=confirmed, name='default')
         return device
 
-    def get_profile_as_dict(self):
+    def create_static_device(self):
         """
-        Return user instance as serialized data.
+        Create a user's static device.
         """
-        return import_string(settings.USER_SERIALIZER)(instance=self).data
+        return create_static_device(self)
+
+    def verify_totp_device(self, otp: str) -> bool:
+        """
+        Verify user's default TOTP device.
+        """
+        return verify_totp_device(self, otp)
+
+    def confirm_any_device_by_otp(self, otp: str) -> bool:
+        """
+        Confirm that provided otp is valid a user's TOTP or static device.
+        """
+        return confirm_any_device_token(self, otp)

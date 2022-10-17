@@ -17,6 +17,43 @@ def token_length_validator(token: str):
         )
 
 
+class OTPSerializer(serializers.Serializer):
+    """
+    Serialize a given otp.
+    """
+
+    otp = fields.CharField(
+        required=False,
+        allow_blank=True,
+        write_only=True,
+        validators=[token_length_validator],
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.user: User = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+    def validate_otp(self, otp):
+        if not self.user:
+            return otp
+        if self.user.confirm_any_device_by_otp(otp):
+            return otp
+        raise ValidationError(_("The given token is not valid."))
+
+
+class ConfirmTOTPDeviceSerializer(OTPSerializer):
+    """
+    Confirm a user's TOTP device.
+    """
+
+    def validate_otp(self, otp):
+        if not self.user:
+            return otp
+        if self.user.verify_totp_device(otp):
+            return otp
+        raise ValidationError(_("The given token is not valid."))
+
+
 class UserSerializer(serializers.ModelSerializer):
     """
     Serialize a user instance.
@@ -103,20 +140,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
 
-class LoginSerializer(serializers.ModelSerializer):
+class LoginSerializer(serializers.ModelSerializer, OTPSerializer):
     username = serializers.CharField(
         label=_("Username or email address"), max_length=254
-    )
-    otp_token = fields.CharField(
-        required=False,
-        allow_blank=True,
-        write_only=True,
-        validators=[token_length_validator],
     )
 
     class Meta:
         model = get_user_model()
-        fields = ['username', 'password', 'otp_token']
+        fields = ['username', 'password', 'otp']
         extra_kwargs = {
             'password': {'write_only': True, 'style': {'input_type': 'password'}}
         }
@@ -124,7 +155,7 @@ class LoginSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         username_or_email = attrs.get('username')
         password = attrs.get('password')
-        token = attrs.get('otp_token', '')
+        token = attrs.get('otp', '')
         user = authenticate(
             self.context.get('request'), username=username_or_email, password=password
         )
@@ -138,7 +169,7 @@ class LoginSerializer(serializers.ModelSerializer):
             )
         if user.has_2fa_enabled and not confirm_any_device_token(user, token):
             raise serializers.ValidationError(
-                detail={'otp_token': _("Token is not valid")}, code='authorization'
+                detail={'otp': _("Token is not valid")}, code='authorization'
             )
         attrs['user'] = user
         return attrs

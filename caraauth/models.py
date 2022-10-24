@@ -9,12 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from django_otp import user_has_device
 
 from caraauth import validators
-from caraauth.utils.two_fa import (
-    confirm_any_device_token,
-    create_static_device,
-    get_user_totp_device,
-    verify_totp_device,
-)
+from caraauth.utils import two_fa
 
 if TYPE_CHECKING:
     from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -63,7 +58,7 @@ class User(AbstractUser):
         """
         Return existing TOTP Device or create new one.
         """
-        if not (device := get_user_totp_device(self)):
+        if not (device := two_fa.get_user_totp_device(self)):
             device = self.totpdevice_set.create(confirmed=confirmed, name='default')
         return device
 
@@ -71,16 +66,31 @@ class User(AbstractUser):
         """
         Create a user's static device.
         """
-        return create_static_device(self)
+        return two_fa.create_static_device(self)
+
+    @property
+    def static_device_tokens(self):
+        """
+        Get user's static device tokens.
+        """
+        return two_fa.get_static_device_tokens(self)
+
+    def refresh_static_device_tokens(self):
+        """
+        Replace current static device tokens with new ones.
+        """
+        if device := two_fa.get_user_static_device(self):
+            return two_fa.generate_static_device_tokens(self, device)
+        return []
 
     def verify_totp_device(self, otp: str) -> bool:
         """
         Verify user's default TOTP device.
         """
-        return verify_totp_device(self, otp)
+        return two_fa.verify_totp_device(self, otp)
 
     def confirm_any_device_by_otp(self, otp: str) -> bool:
         """
         Confirm that provided otp is valid a user's TOTP or static device.
         """
-        return confirm_any_device_token(self, otp)
+        return two_fa.confirm_any_device_token(self, otp)

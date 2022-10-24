@@ -6,7 +6,9 @@ from pytest import mark
 from rest_framework import status
 from rest_framework.reverse import reverse
 
-setup_2fa_url = reverse('user_area:setup_2fa')
+setup_2fa_url = reverse('user_area:2fa_setup')
+backup_tokens_url = reverse('user_area:2fa_static_tokens')
+refresh_tokens_url = reverse('user_area:2fa_refresh_static_tokens')
 
 
 @mark.django_db
@@ -26,6 +28,9 @@ def test__setup_2fa__success(user, apitest):
     # confirm 2fa setup
     response = apitest(user).post(setup_2fa_url, data={'otp': token})
     assert response.status_code == status.HTTP_200_OK
+    assert response.data['static_tokens'] == list(
+        user.static_device_tokens.values_list('token', flat=True)
+    )
     assert user.has_2fa_enabled
 
 
@@ -37,3 +42,17 @@ def test__setup_2fa__already_enabled(user_2fa, apitest):
     response = apitest(user_2fa).get(setup_2fa_url)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@mark.django_db
+def test__get_2fa_static_device_tokens(user_2fa, apitest):
+    """
+    Get user's 2FA Static/Backup Tokens as response.
+    """
+    response = apitest(user_2fa).get(backup_tokens_url)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data['static_tokens']) == 6
+    assert response.data['static_tokens'] == list(
+        user_2fa.static_device_tokens.values_list('token', flat=True)
+    )

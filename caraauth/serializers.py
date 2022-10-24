@@ -17,6 +17,13 @@ def token_length_validator(token: str):
         )
 
 
+def static_token_length_validator(token: str):
+    if len(token) != 8:
+        raise serializers.ValidationError(
+            _("The token length needs to be 8 characters long.")
+        )
+
+
 class OTPSerializer(serializers.Serializer):
     """
     Serialize a given otp.
@@ -39,6 +46,19 @@ class OTPSerializer(serializers.Serializer):
         if self.user.confirm_any_device_by_otp(otp):
             return otp
         raise ValidationError(_("The given token is not valid."))
+
+
+class StaticTokenSerializer(serializers.Serializer):
+    """
+    Serialize a given static token.
+    """
+
+    token = fields.CharField(
+        validators=[static_token_length_validator],
+    )
+
+    def to_representation(self, obj):
+        return obj.token
 
 
 class ConfirmTOTPDeviceSerializer(OTPSerializer):

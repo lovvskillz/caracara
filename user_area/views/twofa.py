@@ -3,8 +3,8 @@ from base64 import b32encode
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from caraauth.authentication import Has2FADisabled
-from caraauth.serializers import ConfirmTOTPDeviceSerializer
+from caraauth.authentication import Has2FADisabled, Has2FAEnabled
+from caraauth.serializers import ConfirmTOTPDeviceSerializer, StaticTokenSerializer
 
 
 class Setup2FAView(APIView):
@@ -24,4 +24,23 @@ class Setup2FAView(APIView):
         )
         otp_serializer.is_valid(raise_exception=True)
         tokens = request.user.create_static_device()
-        return Response(data={'static_tokens': tokens})
+        static_token_serializer = StaticTokenSerializer(tokens, many=True)
+        return Response(data={'static_tokens': static_token_serializer.data})
+
+
+class BackupTokensView(APIView):
+    permission_classes = (Has2FAEnabled,)
+
+    def get(self, request, *args, **kwargs):
+        tokens = request.user.static_device_tokens
+        static_token_serializer = StaticTokenSerializer(tokens, many=True)
+        return Response(data={'static_tokens': static_token_serializer.data})
+
+
+class RefreshBackupTokensView(APIView):
+    permission_classes = (Has2FAEnabled,)
+
+    def post(self, request, *args, **kwargs):
+        tokens = request.user.refresh_static_device_tokens()
+        static_token_serializer = StaticTokenSerializer(tokens, many=True)
+        return Response(data={'static_tokens': static_token_serializer.data})

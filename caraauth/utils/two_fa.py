@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import Optional, TYPE_CHECKING, Union
 
 from django.db.models import QuerySet
 from django_otp import devices_for_user
@@ -82,7 +82,7 @@ def confirm_static_device_token(user: 'User', token: str) -> bool:
 
 
 def get_user_static_device(
-    user: 'User', confirmed: Optional[bool] = None
+    user: 'User', confirmed: Optional[bool] = True
 ) -> Optional['StaticDevice']:
     """
     Return the first static device for a user.
@@ -94,20 +94,25 @@ def get_user_static_device(
     return None
 
 
-def create_static_device(user: 'User') -> List[bytes]:
+def create_static_device(user: 'User') -> 'QuerySet':
     """
     Create a static device and return 6 tokens.
     """
     device = get_user_static_device(user, True)
     if not device:
         device = StaticDevice.objects.create(user=user, name="Backup")
+    return generate_static_device_tokens(device)
+
+
+def generate_static_device_tokens(device: 'StaticDevice') -> 'QuerySet':
+    """
+    Generate new static device tokens for the given user.
+    """
     device.token_set.all().delete()
-    tokens = []
     for n in range(6):
         token = StaticToken.random_token()
         device.token_set.create(token=token)
-        tokens.append(token)
-    return tokens
+    return device.token_set.all()
 
 
 def get_static_device_tokens(user: 'User') -> Union['QuerySet', list]:

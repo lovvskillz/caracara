@@ -12,6 +12,7 @@ twofa_urlpatterns = [
         twofa.RefreshBackupTokensView.as_view(),
         name='2fa_refresh_static_tokens',
     ),
+    path('disable/', twofa.Disable2FAView.as_view(), name='2fa_disable'),
 ]
 
 urlpatterns = [

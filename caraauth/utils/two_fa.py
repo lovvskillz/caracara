@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from django.db.models import QuerySet
 from django_otp import devices_for_user
@@ -132,3 +132,12 @@ def confirm_any_device_token(user: 'User', token: str) -> bool:
     if len(token) == 6:
         return confirm_totp_device_token(user, token)
     return confirm_static_device_token(user, token)
+
+
+def delete_devices_for_user(user: 'User') -> bool:
+    """
+    Delete user's devices.
+    """
+    TOTPDevice.objects.filter(user=user).delete()
+    StaticDevice.objects.filter(user=user).delete()
+    return True

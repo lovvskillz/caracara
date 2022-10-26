@@ -54,6 +54,12 @@ class User(AbstractUser):
     def has_2fa_enabled(self):
         return user_has_device(self)
 
+    def enable_2fa(self):
+        return self.get_or_create_totp_device()
+
+    def disable_2fa(self):
+        return two_fa.delete_devices_for_user(self)
+
     def get_or_create_totp_device(self, confirmed: bool = False) -> 'TOTPDevice':
         """
         Return existing TOTP Device or create new one.

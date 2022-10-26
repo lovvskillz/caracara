@@ -24,6 +24,13 @@ def user() -> User:
 
 
 @fixture
+def user_2fa(user):
+    user.get_or_create_totp_device(confirmed=True)
+    user.create_static_device()
+    return user
+
+
+@fixture
 def admin_user() -> User:
     return UserFactory.create(is_superuser=True)
 

@@ -85,7 +85,7 @@ def test__2fa_enabled(user_2fa, apitest, web_client):
     data = {
         'username': user_data['username'],
         'password': user_data['password'],
-        'otp_token': totp.token(),
+        'otp': totp.token(),
     }
 
     response = apitest().post(LOGIN_URL, data=data)
@@ -97,7 +97,7 @@ def test__2fa_enabled(user_2fa, apitest, web_client):
 
 
 @mark.parametrize(
-    'otp_token, error_message',
+    'otp, error_message',
     [
         ('', "Token is not valid"),
         ('000000', "Token is not valid"),
@@ -108,19 +108,17 @@ def test__2fa_enabled(user_2fa, apitest, web_client):
     ],
 )
 @mark.django_db
-def test__2fa_enabled__invalid_token(
-    user_2fa, apitest, web_client, otp_token, error_message
-):
+def test__2fa_enabled__invalid_token(user_2fa, apitest, web_client, otp, error_message):
     """
     Deny login with invalid otp token.
     """
     data = {
         'username': user_data['username'],
         'password': user_data['password'],
-        'otp_token': otp_token,
+        'otp': otp,
     }
 
     response = apitest().post(LOGIN_URL, data=data)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert str(response.data['otp_token'][0]) == error_message
+    assert str(response.data['otp'][0]) == error_message

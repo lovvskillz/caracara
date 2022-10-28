@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'two_factor',
     'caraauth.apps.CaraauthConfig',
     'user_area.apps.UserAreaConfig',
+    'server.apps.ServerConfig',
 ]
 
 MIDDLEWARE = [

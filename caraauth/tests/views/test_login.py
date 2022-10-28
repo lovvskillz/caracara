@@ -85,7 +85,7 @@ def test__2fa_enabled(user_2fa, apitest, web_client):
     data = {
         'username': user_data['username'],
         'password': user_data['password'],
-        'otp': totp.token(),
+        'otp': str(totp.token()).rjust(6, '0'),
     }
 
     response = apitest().post(LOGIN_URL, data=data)

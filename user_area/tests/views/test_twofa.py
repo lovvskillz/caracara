@@ -24,10 +24,11 @@ def test__setup_2fa__success(user, apitest):
     totp_device = TOTPDevice.objects.first()
     totp = TOTP(totp_device.bin_key)
     totp.time = time()
-    token = totp.token()
+    token = str(totp.token())
+    data = {'otp': token.rjust(6, '0')}
 
     # confirm 2fa setup
-    response = apitest(user).post(setup_2fa_url, data={'otp': token})
+    response = apitest(user).post(setup_2fa_url, data=data)
     assert response.status_code == status.HTTP_200_OK
     assert response.data['static_tokens'] == list(
         user.static_device_tokens.values_list('token', flat=True)
@@ -77,8 +78,8 @@ def test__remove_2fa(user_2fa, apitest):
     totp_device = TOTPDevice.objects.first()
     totp = TOTP(totp_device.bin_key)
     totp.time = time()
-    token = totp.token()
-    data = {'otp': token}
+    token = str(totp.token())
+    data = {'otp': token.rjust(6, '0')}
 
     response = apitest(user_2fa).post(disable_2fa_url, data=data)
 

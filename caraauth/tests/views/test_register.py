@@ -6,7 +6,7 @@ from rest_framework.reverse import reverse
 
 from conftest import UserFactory
 
-REGISTER_URL = reverse('auth:register')
+REGISTER_URL = reverse('auth_api:register')
 VALID_USER_DATA = {
     'username': 'new_user',
     'email': 'new.user@example.com',

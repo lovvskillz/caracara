@@ -6,7 +6,7 @@ from rest_framework.reverse import reverse
 
 from caraauth.serializers import UserProfileSerializer
 
-profile_url = reverse('user_area:profile')
+profile_url = reverse('user_area_api:profile')
 
 
 @mark.django_db

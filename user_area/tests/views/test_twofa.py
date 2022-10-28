@@ -6,10 +6,10 @@ from pytest import mark
 from rest_framework import status
 from rest_framework.reverse import reverse
 
-setup_2fa_url = reverse('user_area:2fa_setup')
-disable_2fa_url = reverse('user_area:2fa_disable')
-backup_tokens_url = reverse('user_area:2fa_static_tokens')
-refresh_tokens_url = reverse('user_area:2fa_refresh_static_tokens')
+setup_2fa_url = reverse('user_area_api:2fa_setup')
+disable_2fa_url = reverse('user_area_api:2fa_disable')
+backup_tokens_url = reverse('user_area_api:2fa_static_tokens')
+refresh_tokens_url = reverse('user_area_api:2fa_refresh_static_tokens')
 
 
 @mark.django_db

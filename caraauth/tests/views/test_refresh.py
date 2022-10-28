@@ -7,7 +7,7 @@ from rest_framework.exceptions import ErrorDetail
 from rest_framework.fields import DateTimeField
 from rest_framework.reverse import reverse
 
-REFRESH_URL = reverse('auth:refresh')
+REFRESH_URL = reverse('auth_api:refresh')
 
 
 @freeze_time('2022-09-01')

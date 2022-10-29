@@ -161,7 +161,10 @@ LOGIN_REDIRECT_URL = 'user_area:settings'
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 50,
-    'DEFAULT_AUTHENTICATION_CLASSES': ('durin.auth.TokenAuthentication',),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'durin.auth.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
 }
 
 # Durin Settings

@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from user_area.views import settings, twofa
+from user_area.views.api import settings, twofa
 
 app_name = 'user_area_api'
 

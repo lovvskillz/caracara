@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load caracara i18n %}
+
+{% block body %}
+    <form method="post" action="{% url 'auth_web:login' %}">
+        {% render_form login_form %}
+        {% csrf_token %}
+        <button class="btn btn-primary">{% trans "Login" %}</button>
+    </form>
+{% endblock %}

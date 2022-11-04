@@ -1,7 +1,7 @@
 from django.db.models import Manager, Q, QuerySet
 from django.utils import timezone
 
-from utils.constants import POSIX_ZERO
+from carautils.utils.constants import POSIX_ZERO
 
 
 class BaseQuerySet(QuerySet):

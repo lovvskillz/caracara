@@ -187,6 +187,11 @@ class LoginSerializer(serializers.ModelSerializer, OTPSerializer):
                 ),
                 code='authorization',
             )
+        if not user.is_active:
+            raise serializers.ValidationError(
+                detail=_("This account is inactive."),
+                code='authorization',
+            )
         if user.has_2fa_enabled and not confirm_any_device_token(user, token):
             raise serializers.ValidationError(
                 detail={'otp': _("Token is not valid")}, code='authorization'

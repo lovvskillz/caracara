@@ -2,8 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from utils.constants import POSIX_ZERO
-from utils.db.managers import BaseManager, SoftDeleteManager
+from carautils.utils.constants import POSIX_ZERO
+from carautils.utils.db.managers import BaseManager, SoftDeleteManager
 
 
 class BaseModel(models.Model):

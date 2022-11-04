@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
     'two_factor',
+    'carautils.apps.CarautilsConfig',
     'caraauth.apps.CaraauthConfig',
     'user_area.apps.UserAreaConfig',
     'server.apps.ServerConfig',
@@ -78,7 +79,6 @@ ROOT_URLCONF = 'caracara.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -153,8 +153,10 @@ USER_SERIALIZER = 'caraauth.serializers.UserSerializer'
 
 AUTHENTICATION_BACKENDS = ['caraauth.backends.UsernameOrEmailModelBackend']
 
-LOGIN_URL = 'auth:login'
-LOGIN_REDIRECT_URL = 'user_area:settings'
+LOGIN_URL = 'auth_web:login'
+LOGIN_REDIRECT_URL = 'user_area_web:dashboard'
+
+# CaraCara Settings
 
 # DRF Settings
 

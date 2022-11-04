@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
-from utils.db.models import BaseModel
+from carautils.utils.db.models import BaseModel
 
 
 class Node(BaseModel):

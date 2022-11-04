@@ -10,7 +10,7 @@ from django_otp import user_has_device
 
 from caraauth import validators
 from caraauth.utils import two_fa
-from utils.db.models import BaseModel
+from carautils.utils.db.models import BaseModel
 
 if TYPE_CHECKING:
     from django_otp.plugins.otp_totp.models import TOTPDevice

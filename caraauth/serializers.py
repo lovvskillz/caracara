@@ -130,14 +130,18 @@ class RegisterSerializer(serializers.ModelSerializer):
                 'validators': [
                     UsernameValidator(),
                     UniqueValidator(
-                        queryset=get_user_model().objects.all(), lookup='iexact'
+                        queryset=get_user_model().objects.all(),
+                        lookup='iexact',
+                        message=_("This username is already taken."),
                     ),
                 ]
             },
             'email': {
                 'validators': [
                     UniqueValidator(
-                        queryset=get_user_model().objects.all(), lookup='iexact'
+                        queryset=get_user_model().objects.all(),
+                        lookup='iexact',
+                        message=_("This email address is already taken."),
                     )
                 ]
             },

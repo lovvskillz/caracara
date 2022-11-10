@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django_webtest import WebTest
 from durin.models import AuthToken, Client
 from factory.django import DjangoModelFactory
 from pytest import fixture
@@ -37,13 +38,16 @@ def admin_user() -> User:
 
 @fixture
 def web_client():
+    """
+    Return web client (durin) for api calls.
+    """
     return Client.objects.get_or_create(name='web', token_ttl=timedelta(days=1))[0]
 
 
 @fixture
 def apitest(web_client):
     """
-    Return API client.
+    Return API client to make requests.
     """
 
     def _auth(user: User = None) -> APIClient:
@@ -60,5 +64,22 @@ def apitest(web_client):
             headers['HTTP_AUTHORIZATION'] = f'Bearer {token.token}'
         api_client.credentials(**headers)
         return api_client
+
+    return _auth
+
+
+@fixture
+def webtest(django_app):
+    """
+    Return Web client to make requests.
+    """
+
+    def _auth(user: User = None) -> WebTest:
+        """
+        Return Web client with optional authorized user if set.
+        """
+        if user:
+            django_app.set_user(user)
+        return django_app
 
     return _auth

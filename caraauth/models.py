@@ -34,7 +34,7 @@ class User(AbstractUser, BaseModel):
             "unique": _("A user with that username already exists."),
         },
     )
-    email = models.EmailField(_("email address"))
+    email = models.EmailField(_("email address"), unique=True)
     password = models.CharField(
         _("password"),
         max_length=128,

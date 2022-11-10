@@ -23,6 +23,7 @@ pylint-django = "^2.5.3"
 flake8 = "^5.0.4"
 pytest-factoryboy = "^2.5.0"
 freezegun = "^1.2.2"
+django-webtest = "^1.9.10"
 
 [tool.black]
 line-length = 88

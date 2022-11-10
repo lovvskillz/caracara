@@ -87,16 +87,36 @@ def test__invalid_field_data(apitest):
 
 
 @mark.parametrize(
-    'username, email, duplicated_field',
+    'username, email, duplicated_field, error',
     [
-        (VALID_USER_DATA['username'], 'another.mail@example.com', 'username'),
-        (VALID_USER_DATA['username'].upper(), 'another.mail@example.com', 'username'),
-        ('just_a_username', VALID_USER_DATA['email'], 'email'),
-        ('just_a_username', VALID_USER_DATA['email'].upper(), 'email'),
+        (
+            VALID_USER_DATA['username'],
+            'another.mail@example.com',
+            'username',
+            "This username is already taken.",
+        ),
+        (
+            VALID_USER_DATA['username'].upper(),
+            'another.mail@example.com',
+            'username',
+            "This username is already taken.",
+        ),
+        (
+            'just_a_username',
+            VALID_USER_DATA['email'],
+            'email',
+            "This email address is already taken.",
+        ),
+        (
+            'just_a_username',
+            VALID_USER_DATA['email'].upper(),
+            'email',
+            "This email address is already taken.",
+        ),
     ],
 )
 @mark.django_db
-def test__duplicated_user_data(apitest, username, email, duplicated_field):
+def test__duplicated_user_data(apitest, username, email, duplicated_field, error):
     """
     Ensure users with duplicated username or email can't be created.
     """
@@ -109,7 +129,5 @@ def test__duplicated_user_data(apitest, username, email, duplicated_field):
     assert get_user_model().objects.count() == 1
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data == {
-        duplicated_field: [
-            ErrorDetail(string="This field must be unique.", code='unique')
-        ]
+        duplicated_field: [ErrorDetail(string=error, code='unique')]
     }

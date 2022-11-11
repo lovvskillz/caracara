@@ -1,0 +1,17 @@
+{% load i18n %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">
+    <p class="alert-title">
+        {% if message.tags == "success" %}
+        {% trans "Success!" %}
+        {% elif message.tags == "info" %}
+        {% trans "Info!" %}
+        {% elif message.tags == "warning" %}
+        {% trans "Warning!" %}
+        {% elif message.tags == "error" %}
+        {% trans "Error!" %}
+        {% endif %}
+    </p>
+    <p class="alert-message">{{ message }}</p>
+</div>
+{% endfor %}

@@ -26,7 +26,11 @@ class LoginView(AnonymousRequiredMixin, TemplateView):
                 request, user, backend='caraauth.backends.UsernameOrEmailModelBackend'
             )
             return HttpResponseRedirect(reverse(settings.LOGIN_REDIRECT_URL))
-        messages.error(request, _("Login could not be performed."))
+        if errors := serializer.errors.get('non_field_errors'):
+            for error in errors:
+                messages.error(request, str(error))
+        else:
+            messages.error(request, _("Login could not be performed."))
         data = {'login_form': serializer}
         return render(request, self.template_name, context=data)
 

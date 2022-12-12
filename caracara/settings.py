@@ -153,8 +153,8 @@ USER_SERIALIZER = 'caraauth.serializers.UserSerializer'
 
 AUTHENTICATION_BACKENDS = ['caraauth.backends.UsernameOrEmailModelBackend']
 
-LOGIN_URL = 'auth_web:login'
-LOGIN_REDIRECT_URL = 'user_area_web:dashboard'
+LOGIN_URL = 'web:auth:login'
+LOGIN_REDIRECT_URL = 'web:user_area:dashboard'
 
 # CaraCara Settings
 

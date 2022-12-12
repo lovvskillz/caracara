@@ -6,7 +6,7 @@ from pytest import fixture, mark
 from rest_framework import status
 from rest_framework.reverse import reverse
 
-LOGIN_URL = reverse('auth_web:login')
+LOGIN_URL = reverse('web:auth:login')
 user_data = {
     'username': 'username123',
     'email': 'user@example.com',
@@ -47,7 +47,7 @@ def test__with_valid_data(webtest, user, username_or_email, web_client):
 
     response = login_form.submit()
 
-    assert response.url == reverse('user_area_web:dashboard')
+    assert response.url == reverse('web:user_area:dashboard')
     assert response.status_code == status.HTTP_302_FOUND
 
 
@@ -94,7 +94,7 @@ def test__2fa_enabled(user_2fa, webtest):
 
     response = login_form.submit()
 
-    assert response.url == reverse('user_area_web:dashboard')
+    assert response.url == reverse('web:user_area:dashboard')
     assert response.status_code == status.HTTP_302_FOUND
 
 

@@ -2,7 +2,7 @@ from django.urls import path
 
 from caraauth.views import api_views
 
-app_name = 'auth_api'
+app_name = 'auth'
 urlpatterns = [
     path('register/', api_views.RegisterView.as_view(), name='register'),
     path('login/', api_views.LoginView.as_view(), name='login'),

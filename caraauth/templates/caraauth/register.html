@@ -2,7 +2,7 @@
 {% load caracara i18n %}
 
 {% block body %}
-    <form method="post" action="{% url 'auth_web:register' %}">
+    <form method="post" action="{% url 'web:auth:register' %}">
         {% render_form register_form %}
         {% csrf_token %}
         <button class="btn btn-primary">{% trans "Register" %}</button>

@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.reverse import reverse
 
-LOGIN_URL = reverse('auth_api:login')
+LOGIN_URL = reverse('api:auth:login')
 user_data = {
     'username': 'username123',
     'email': 'user@example.com',

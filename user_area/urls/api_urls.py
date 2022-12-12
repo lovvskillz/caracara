@@ -2,7 +2,7 @@ from django.urls import include, path
 
 from user_area.views.api import settings, twofa
 
-app_name = 'user_area_api'
+app_name = 'user_area'
 
 twofa_urlpatterns = [
     path('setup/', twofa.Setup2FAView.as_view(), name='2fa_setup'),

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load caracara i18n %}
+
+{% block body %}
+<div id="dashboard">
+    <div class="row">
+        <div class="row__col row__col--12 row__col--6--m">
+            <div class="card">
+                <div class="card__body">
+                    <p class="card__title">{% trans "Profile" %}</p>
+                    <p>{% trans "Username" %}: [[profile.username]]</p>
+                    <p>{% trans "E-Mail address" %}: [[profile.email]]</p>
+                    <p>{% trans "Last Login" %}: [[profile.last_login]]</p>
+                    <p>{% trans "Date joined" %}: [[profile.date_joined]]</p>
+                </div>
+                <div class="card__footer"></div>
+            </div>
+        </div>
+        <div class="row__col row__col--12 row__col--6--m">
+            <div class="card">
+                <div class="card__body">
+                    <p class="card__title">{% trans "Settings" %}</p>
+                    <form>
+                        {% render_form user_profile_form %}
+                        <button type="submit" class="btn btn--primary">
+                            {% trans "Save changes" %}
+                        </button>
+                    </form>
+                </div>
+                <div class="card__footer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block script %}
+<script>
+    const { createApp } = Vue;
+    const app = createApp({
+        data() {
+            return {
+                'profile': null
+            }
+        },
+        methods: {
+            'getUserData': function () {
+                fetch("{% url 'api:user_area:profile' %}")
+                    .then(response => response.json())
+                    .then(data => this.profile = data);
+            }
+        },
+        created: function () {
+            this.getUserData();
+        }
+    });
+    app.config.compilerOptions.delimiters = ['[[', ']]'];
+    app.mount('#dashboard');
+</script>
+{% endblock %}

@@ -6,4 +6,5 @@ app_name = 'user_area'
 
 urlpatterns = [
     path('dashboard/', user.DashboardView.as_view(), name='dashboard'),
+    path('profile/', user.ProfileView.as_view(), name='profile'),
 ]

@@ -5,6 +5,6 @@
     <form method="post" action="{% url 'web:auth:login' %}">
         {% render_form login_form %}
         {% csrf_token %}
-        <button class="btn btn-primary">{% trans "Login" %}</button>
+        <button class="btn btn--primary">{% trans "Login" %}</button>
     </form>
 {% endblock %}

@@ -96,11 +96,17 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = [
-            'email',
             'username',
-            'has_2fa_enabled',
+            'email',
             'new_password',
             'confirm_new_password',
+            'date_joined',
+            'has_2fa_enabled',
+            'last_login',
+        ]
+        read_only_fields = [
+            'date_joined',
+            'last_login',
         ]
 
     def validate(self, attrs):
@@ -200,5 +206,7 @@ class LoginSerializer(serializers.ModelSerializer, OTPSerializer):
             raise serializers.ValidationError(
                 detail={'otp': _("Token is not valid")}, code='authorization'
             )
+        user.update_last_login()
+        user.save()
         attrs['user'] = user
         return attrs

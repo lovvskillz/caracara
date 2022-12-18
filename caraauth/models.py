@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator
 from django.db import models
+from django.utils import timezone
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 from django_otp import user_has_device
@@ -44,6 +45,7 @@ class User(AbstractUser, BaseModel):
         ),
         validators=[password_validator],
     )
+    last_login = models.DateTimeField(_("Last Login"), default=timezone.now)
 
     def get_profile_as_dict(self):
         """
@@ -101,3 +103,9 @@ class User(AbstractUser, BaseModel):
         Confirm that provided otp is valid a user's TOTP or static device.
         """
         return two_fa.confirm_any_device_token(self, otp)
+
+    def update_last_login(self):
+        """
+        Update last login to current timestamp.
+        """
+        self.last_login = timezone.now()

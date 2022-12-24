@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.reverse import reverse
 
+from caraauth.models import User
 from caraauth.serializers import UserProfileSerializer
 
 profile_url = reverse('api:user_area:profile')
@@ -119,3 +120,16 @@ def test_update_user_profile__invalid_data(apitest, user, data, error):
     assert response.data == error
     assert updated_user.username == user.username
     assert updated_user.password == user.password
+
+
+@mark.django_db
+def test_delete_user__success(apitest, user):
+    """
+    Ensure that a user can delete his account.
+    """
+    assert User.objects.count() == 1
+
+    response = apitest(user).delete(profile_url)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert User.objects.count() == 0

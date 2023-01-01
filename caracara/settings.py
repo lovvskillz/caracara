@@ -19,6 +19,8 @@ env = environ.Env(
     SECRET_KEY=(str, None),
     TOKEN_LIFETIME=(int, 14),
     OTP_TOTP_ISSUER=(str, None),
+    CRYPTOGRAPHY_SALT=(str, None),
+    CRYPTOGRAPHY_KEY=(str, None),
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -180,3 +182,8 @@ REST_DURIN = {
 # 2FA Settings
 
 OTP_TOTP_ISSUER = env('OTP_TOTP_ISSUER')
+
+# Encrypted Model Fields
+
+CRYPTOGRAPHY_SALT = env('CRYPTOGRAPHY_SALT')
+CRYPTOGRAPHY_KEY = env('CRYPTOGRAPHY_KEY')

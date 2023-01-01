@@ -13,6 +13,7 @@ djangorestframework = "^3.13.1"
 django-two-factor-auth = {extras = ["phonenumberslite"], version = "^1.14.0"}
 django-rest-durin = "^1.0.0"
 django-extensions = "^3.2.1"
+django-cryptography = "^1.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest-django = "^4.5.2"

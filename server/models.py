@@ -111,7 +111,7 @@ class UserGameServer(SoftDeleteModel):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_("User")
     )
     server_name = models.CharField(_("Gameserver Name"), max_length=64)
-    software = models.ForeignKey(
+    software_version = models.ForeignKey(
         'GameSoftwareVersion',
         on_delete=models.PROTECT,
         verbose_name=_("Gameserver Software Version"),

@@ -339,7 +339,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    'software',
+                    'software_version',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
                         to='server.gamesoftwareversion',

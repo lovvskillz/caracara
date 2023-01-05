@@ -61,7 +61,7 @@ class NodeFactory(DjangoModelFactory):
 
 class UserGameserverFactory(DjangoModelFactory):
     user = SubFactory(UserFactory)
-    version = SubFactory(GameSoftwareVersionFactory)
+    software_version = SubFactory(GameSoftwareVersionFactory)
     node = SubFactory(NodeFactory)
     ram = fuzzy.FuzzyInteger(low=512, high=4096, step=512)
     disk_space = fuzzy.FuzzyInteger(low=512, high=8192, step=512)

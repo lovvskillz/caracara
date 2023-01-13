@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django_cryptography.fields import encrypt
 
 from carautils.utils.db.models import BaseModel, SoftDeleteModel
+from server.manager import IPNetManager, UserGameserverManager
+from server.validators import validate_cidr_notation
 
 port_validator = MaxValueValidator(65535)
 
@@ -37,6 +39,44 @@ class Node(BaseModel):
 
     def __str__(self):
         return f"{self.ip}"
+
+
+class IPNet(BaseModel):
+    """
+    The IPNet Models defines an IP subnet.
+    """
+
+    ip_net = models.CharField(
+        _("CIDR Notation"), max_length=18, validators=[validate_cidr_notation]
+    )
+    active = models.BooleanField(_("Active"), default=True)
+
+    objects = IPNetManager()
+
+    class Meta:
+        verbose_name = _("IPNet")
+        verbose_name_plural = _("IPNets")
+
+    def split_cidr_notation(self):
+        """
+        Split the IP net and return net id and suffix as a tuple.
+        """
+        net_id, suffix = tuple(self.ip_net.split('/'))
+        return net_id, int(suffix)
+
+    @property
+    def net_id(self):
+        """
+        Get the IP net id.
+        """
+        return self.split_cidr_notation()[0]
+
+    @property
+    def suffix(self):
+        """
+        Get the CIDR suffix.
+        """
+        return self.split_cidr_notation()[1]
 
 
 class Game(BaseModel):
@@ -138,6 +178,8 @@ class UserGameServer(SoftDeleteModel):
     sql_password = encrypt(models.CharField(_("SQL Password"), max_length=64))
     ftp_password = encrypt(models.CharField(_("FTP Password"), max_length=64))
     extras = models.JSONField(_("Additional Data"), default=dict)
+
+    objects = UserGameserverManager()
 
     class Meta:
         verbose_name = _("Gameserver")

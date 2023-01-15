@@ -59,22 +59,22 @@ class IPNet(BaseModel):
 
     def split_cidr_notation(self):
         """
-        Split the IP net and return net id and suffix as a tuple.
+        Split the IP net and return network prefix and suffix as a tuple.
         """
-        net_id, suffix = tuple(self.ip_net.split('/'))
-        return net_id, int(suffix)
+        network_prefix, suffix = tuple(self.ip_net.split('/'))
+        return network_prefix, int(suffix)
 
     @property
-    def net_id(self):
+    def network_prefix(self):
         """
-        Get the IP net id.
+        Return the network prefix
         """
         return self.split_cidr_notation()[0]
 
     @property
     def suffix(self):
         """
-        Get the CIDR suffix.
+        Return the CIDR suffix.
         """
         return self.split_cidr_notation()[1]
 

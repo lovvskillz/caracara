@@ -1,6 +1,6 @@
 from random import randint
 
-from factory import Sequence, SubFactory, fuzzy
+from factory import LazyFunction, Sequence, SubFactory, fuzzy
 from factory.django import DjangoModelFactory
 from pytest import fixture
 
@@ -10,9 +10,35 @@ from server.models import (
     Game,
     GameSoftware,
     GameSoftwareVersion,
+    IPNet,
     Node,
     UserGameServer,
 )
+
+
+def generate_ip():
+    return '.'.join(
+        [
+            str(randint(1, 255)),
+            str(randint(1, 255)),
+            str(randint(1, 255)),
+            str(randint(1, 255)),
+        ]
+    )
+
+
+def generate_ip_net(suffix: int = 24):
+    remaining_bits = 32 - suffix
+    last_byte = 256 - 2**remaining_bits
+    ip = '.'.join(
+        [
+            str(randint(1, 255)),
+            str(randint(1, 255)),
+            str(randint(1, 255)),
+            str(last_byte),
+        ]
+    )
+    return f'{ip}/{suffix}'
 
 
 class GameFactory(DjangoModelFactory):
@@ -41,22 +67,20 @@ class GameSoftwareVersionFactory(DjangoModelFactory):
 
 
 class NodeFactory(DjangoModelFactory):
-    ip = Sequence(
-        lambda n: ".".join(
-            [
-                str(randint(1, 255)),
-                str(randint(1, 255)),
-                str(randint(1, 255)),
-                str(randint(1, 255)),
-            ]
-        )
-    )
+    ip = LazyFunction(generate_ip)
     cores = fuzzy.FuzzyInteger(low=4, high=64)
     ram = fuzzy.FuzzyInteger(low=8192, high=131072, step=2048)
     disk_space = fuzzy.FuzzyInteger(low=81920, high=1310720, step=2048)
 
     class Meta:
         model = Node
+
+
+class IPNetFactory(DjangoModelFactory):
+    ip_net = LazyFunction(generate_ip_net)
+
+    class Meta:
+        model = IPNet
 
 
 class UserGameserverFactory(DjangoModelFactory):

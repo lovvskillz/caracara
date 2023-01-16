@@ -1,5 +1,7 @@
+from datetime import timedelta
 from random import randint
 
+from django.utils import timezone
 from factory import LazyFunction, Sequence, SubFactory, fuzzy
 from factory.django import DjangoModelFactory
 from pytest import fixture
@@ -53,6 +55,7 @@ class GameFactory(DjangoModelFactory):
 class GameSoftwareFactory(DjangoModelFactory):
     game = SubFactory(GameFactory)
     name = fuzzy.FuzzyText(length=64)
+    default_port = fuzzy.FuzzyInteger(low=25565, high=65535)
 
     class Meta:
         model = GameSoftware
@@ -89,7 +92,14 @@ class UserGameserverFactory(DjangoModelFactory):
     node = SubFactory(NodeFactory)
     ram = fuzzy.FuzzyInteger(low=512, high=4096, step=512)
     disk_space = fuzzy.FuzzyInteger(low=512, high=8192, step=512)
+    cores = fuzzy.FuzzyInteger(low=1, high=16)
     status = GAMESERVER_ENABLED
+    port = fuzzy.FuzzyInteger(low=25565, high=65535)
+    own_ip = None
+    available_until = fuzzy.FuzzyDateTime(
+        start_dt=timezone.now() + timedelta(days=1),
+        end_dt=timezone.now() + timedelta(days=90),
+    )
 
     class Meta:
         model = UserGameServer

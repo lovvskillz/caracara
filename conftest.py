@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django_webtest import WebTest
 from durin.models import AuthToken, Client
+from factory import Sequence
 from factory.django import DjangoModelFactory
 from pytest import fixture
 from rest_framework.test import APIClient
@@ -13,8 +14,8 @@ class UserFactory(DjangoModelFactory):
     class Meta:
         model = 'caraauth.User'
 
-    username = 'some_user'
-    email = 'some.user@example.com'
+    username = Sequence(lambda n: f'some_user_{n}')
+    email = Sequence(lambda n: f'some.user{n}@example.com')
     is_superuser = False
     is_active = True
 

@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django_cryptography.fields import encrypt
 
 from carautils.utils.db.models import BaseModel, SoftDeleteModel
-from server.manager import IPNetManager, UserGameserverManager
+from server.manager import IPNetManager, NodeManager, UserGameserverManager
 from server.validators import validate_cidr_notation
 
 port_validator = MaxValueValidator(65535)
@@ -36,6 +36,9 @@ class Node(BaseModel):
     cores = models.PositiveIntegerField(_("Cores"))
     ram = models.PositiveIntegerField(_("RAM (MB)"))
     disk_space = models.PositiveIntegerField(_("Disk Space (GB)"))
+    active = models.BooleanField(_("Active"), default=True)
+
+    objects = NodeManager()
 
     def __str__(self):
         return f"{self.ip}"
@@ -148,16 +151,23 @@ class UserGameServer(SoftDeleteModel):
     """
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_("User")
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name=_("User"),
+        related_name='game_servers',
     )
     server_name = models.CharField(_("Gameserver Name"), max_length=64)
     software_version = models.ForeignKey(
         'GameSoftwareVersion',
         on_delete=models.PROTECT,
         verbose_name=_("Gameserver Software Version"),
+        related_name='game_servers',
     )
     node = models.ForeignKey(
-        'Node', on_delete=models.PROTECT, verbose_name=_("Selected Node")
+        'Node',
+        on_delete=models.PROTECT,
+        verbose_name=_("Selected Node"),
+        related_name='game_servers',
     )
     own_ip = models.GenericIPAddressField(
         _("Gameserver IP Address"), blank=True, null=True

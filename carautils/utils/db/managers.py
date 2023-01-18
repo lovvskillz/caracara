@@ -5,11 +5,11 @@ from carautils.utils.constants import POSIX_ZERO
 
 
 class BaseQuerySet(QuerySet):
-    ...
+    pass
 
 
 class BaseManager(Manager):
-    ...
+    pass
 
 
 class SoftDeleteQuerySet(BaseQuerySet):
@@ -27,7 +27,7 @@ class SoftDeleteQuerySet(BaseQuerySet):
         return super().update(deleted_at=now, modified_at=now)
 
 
-class SoftDeleteManager(Manager):
+class SoftDeleteManager(BaseManager):
     """
     custom manager class ...does nothing special for now
     """

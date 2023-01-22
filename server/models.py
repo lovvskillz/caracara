@@ -36,12 +36,18 @@ class Node(BaseModel):
     cores = models.PositiveIntegerField(_("Cores"))
     ram = models.PositiveIntegerField(_("RAM (MB)"))
     disk_space = models.PositiveIntegerField(_("Disk Space (GB)"))
+    priority = models.PositiveSmallIntegerField(_("Priority"), default=0)
     active = models.BooleanField(_("Active"), default=True)
 
     objects = NodeManager()
 
     def __str__(self):
         return f"{self.ip}"
+
+    class Meta:
+        ordering = [
+            '-priority',
+        ]
 
 
 class IPNet(BaseModel):

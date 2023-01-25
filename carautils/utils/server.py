@@ -1,6 +1,6 @@
 from typing import Optional
 
-from server.models import IPNet, UserGameServer
+from server.models import IPNet, Node, UserGameServer
 
 
 def get_available_own_ip() -> Optional[str]:
@@ -25,3 +25,10 @@ def get_available_own_ip() -> Optional[str]:
         return next(filter(lambda ip: ip not in taken_ips, ips), None)
 
     return None
+
+
+def get_node_for_hosting(ram: int, disk_space: int) -> 'Node':
+    """
+    Get a node with enough available capacity.
+    """
+    return Node.objects.enough_available_space(ram, disk_space).first()

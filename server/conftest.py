@@ -115,3 +115,10 @@ def minecraft_1_16():
 @fixture
 def user_gameserver():
     return UserGameserverFactory.create()
+
+
+@fixture
+def basic_server_setup():
+    NodeFactory.create()
+    IPNetFactory.create()
+    GameSoftwareVersionFactory.create()

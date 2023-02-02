@@ -27,6 +27,19 @@ def get_available_own_ip() -> Optional[str]:
     return None
 
 
+def get_available_port(node: 'Node', start_at: int) -> int:
+    """
+    Get an available port for the given node.
+    """
+    taken_ports = (
+        UserGameServer.objects.hosted_on_node(node)
+        .values_list('port', flat=True)
+        .order_by('port')
+    )
+    ports = (i for i in range(start_at + 1, 65535))
+    return next(filter(lambda port: port not in taken_ports, ports), None)
+
+
 def get_node_for_hosting(ram: int, disk_space: int) -> 'Node':
     """
     Get a node with enough available capacity.

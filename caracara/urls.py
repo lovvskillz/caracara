@@ -5,6 +5,7 @@ api_urlpatterns = (
     [
         path('auth/', include('caraauth.urls.api_urls')),
         path('user/', include('user_area.urls.api_urls')),
+        path('server/', include('server.urls.api_urls')),
     ],
     'api',
 )

@@ -5,14 +5,15 @@ from carautils import constants
 from server.models import UserGameServer
 
 
-class CreateServerSerializer(serializers.ModelSerializer):
-    disk_space = serializers.IntegerField(
-        choices=constants.DISK_SPACE_CHOICES, label=_("Select disk space")
+class GameserverSerializer(serializers.ModelSerializer):
+    disk_space = serializers.ChoiceField(
+        choices=constants.DISK_SPACE_CHOICES,
+        label=_("Select disk space"),
     )
-    period = serializers.IntegerField(
+    period = serializers.ChoiceField(
         choices=constants.PERIOD_CHOICES, label=_("Select rental period")
     )
-    ram = serializers.IntegerField(choices=constants.RAM_CHOICES, label=_("Select RAM"))
+    ram = serializers.ChoiceField(choices=constants.RAM_CHOICES, label=_("Select RAM"))
     with_own_ip = serializers.BooleanField(label=_("With own IP address"))
 
     class Meta:

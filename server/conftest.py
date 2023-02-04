@@ -5,6 +5,7 @@ from django.utils import timezone
 from factory import LazyFunction, Sequence, SubFactory, fuzzy
 from factory.django import DjangoModelFactory
 from pytest import fixture
+from pytest_factoryboy import register
 
 from conftest import UserFactory
 from server.models import (
@@ -43,6 +44,7 @@ def generate_ip_net(suffix: int = 24):
     return f'{ip}/{suffix}'
 
 
+@register
 class GameFactory(DjangoModelFactory):
     title = fuzzy.FuzzyText(length=64)
     min_ram = fuzzy.FuzzyInteger(low=512, high=4096, step=128)
@@ -52,6 +54,7 @@ class GameFactory(DjangoModelFactory):
         model = Game
 
 
+@register
 class GameSoftwareFactory(DjangoModelFactory):
     game = SubFactory(GameFactory)
     name = fuzzy.FuzzyText(length=64)
@@ -61,6 +64,7 @@ class GameSoftwareFactory(DjangoModelFactory):
         model = GameSoftware
 
 
+@register
 class GameSoftwareVersionFactory(DjangoModelFactory):
     software = SubFactory(GameSoftwareFactory)
     version = Sequence(lambda n: "1.%s" % randint(1, 20))
@@ -69,6 +73,7 @@ class GameSoftwareVersionFactory(DjangoModelFactory):
         model = GameSoftwareVersion
 
 
+@register
 class NodeFactory(DjangoModelFactory):
     ip = LazyFunction(generate_ip)
     cores = fuzzy.FuzzyInteger(low=4, high=64)
@@ -79,6 +84,7 @@ class NodeFactory(DjangoModelFactory):
         model = Node
 
 
+@register
 class IPNetFactory(DjangoModelFactory):
     ip_net = LazyFunction(generate_ip_net)
 
@@ -86,6 +92,7 @@ class IPNetFactory(DjangoModelFactory):
         model = IPNet
 
 
+@register
 class UserGameserverFactory(DjangoModelFactory):
     user = SubFactory(UserFactory)
     software_version = SubFactory(GameSoftwareVersionFactory)

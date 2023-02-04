@@ -5,11 +5,13 @@ from durin.models import AuthToken, Client
 from factory import Sequence
 from factory.django import DjangoModelFactory
 from pytest import fixture
+from pytest_factoryboy import register
 from rest_framework.test import APIClient
 
 from caraauth.models import User
 
 
+@register
 class UserFactory(DjangoModelFactory):
     class Meta:
         model = 'caraauth.User'

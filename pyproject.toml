@@ -7,22 +7,24 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-Django = "^4.1.1"
+Django = "^4.1.6"
 django-environ = "^0.9.0"
 djangorestframework = "^3.13.1"
-django-two-factor-auth = {extras = ["phonenumberslite"], version = "^1.14.0"}
-django-rest-durin = "^1.0.0"
+django-two-factor-auth = {extras = ["phonenumberslite"], version = "^1.15.0"}
+django-rest-durin = "^1.1.0"
 django-extensions = "^3.2.1"
 django-cryptography = "^1.1"
+celery = "^5.2.7"
+docker = "^6.0.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest-django = "^4.5.2"
 black = "^22.8.0"
-pre-commit = "^2.20.0"
+pre-commit = "^2.21.0"
 pylint = "^2.15.0"
 pylint-django = "^2.5.3"
 flake8 = "^5.0.4"
-pytest-factoryboy = "^2.5.0"
+pytest-factoryboy = "^2.5.1"
 freezegun = "^1.2.2"
 django-webtest = "^1.9.10"
 

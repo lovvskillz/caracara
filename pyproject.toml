@@ -6,28 +6,27 @@ authors = ["Vadim Zifra"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
-Django = "^4.1.6"
-django-environ = "^0.9.0"
+python = "^3.12"
+Django = "^5.0.4"
+django-environ = "^0.11.2"
 djangorestframework = "^3.13.1"
 django-two-factor-auth = {extras = ["phonenumberslite"], version = "^1.15.0"}
 django-rest-durin = "^1.1.0"
 django-extensions = "^3.2.1"
 django-cryptography = "^1.1"
-celery = "^5.2.7"
-docker = "^6.0.1"
+celery = "^5.4.0"
+docker = "^7.0.0"
 redis = "^4.5.1"
+gunicorn = "^22.0.0"
+psycopg = {extras = ["binary"], version = "^3.1.18"}
 
 [tool.poetry.group.dev.dependencies]
 pytest-django = "^4.5.2"
-black = "^22.8.0"
 pre-commit = "^2.21.0"
-pylint = "^2.15.0"
-pylint-django = "^2.5.3"
-flake8 = "^5.0.4"
 pytest-factoryboy = "^2.5.1"
 freezegun = "^1.2.2"
 django-webtest = "^1.9.10"
+ruff = "^0.3.7"
 
 [tool.black]
 line-length = 88
@@ -49,9 +48,6 @@ exclude = '''
   | frontend
 )/
 '''
-
-[tool.isort]
-profile = "black"
 
 [build-system]
 requires = ["poetry-core"]

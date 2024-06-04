@@ -17,6 +17,9 @@ env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False),
     SECRET_KEY=(str, None),
+    POSTGRES_NAME=(str, None),
+    POSTGRES_USER=(str, None),
+    POSTGRES_PASSWORD=(str, None),
     TOKEN_LIFETIME=(int, 14),
     OTP_TOTP_ISSUER=(str, None),
     CRYPTOGRAPHY_SALT=(str, None),
@@ -40,7 +43,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1']
 
 
 # Application definition
@@ -101,8 +104,12 @@ WSGI_APPLICATION = 'caracara.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_NAME'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': 'db',
+        'PORT': 5432,
     }
 }
 

@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-Django = "^5.0.4"
+Django = "^4.2.13"
 django-environ = "^0.11.2"
 djangorestframework = "^3.13.1"
 django-two-factor-auth = {extras = ["phonenumberslite"], version = "^1.15.0"}

@@ -9,17 +9,7 @@ from pytest_factoryboy import register
 from rest_framework.test import APIClient
 
 from caraauth.models import User
-
-
-@register
-class UserFactory(DjangoModelFactory):
-    class Meta:
-        model = 'caraauth.User'
-
-    username = Sequence(lambda n: f'some_user_{n}')
-    email = Sequence(lambda n: f'some.user{n}@example.com')
-    is_superuser = False
-    is_active = True
+from caraauth.tests.factories import UserFactory
 
 
 @fixture

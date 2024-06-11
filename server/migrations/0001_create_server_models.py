@@ -13,7 +13,6 @@ import server.validators
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -22,399 +21,399 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Game',
+            name="Game",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         blank=True,
                         default=django.utils.timezone.now,
-                        verbose_name='Created at',
+                        verbose_name="Created at",
                     ),
                 ),
                 (
-                    'modified_at',
+                    "modified_at",
                     models.DateTimeField(
                         blank=True,
                         default=datetime.datetime(
                             1970, 1, 1, 0, 0, tzinfo=datetime.timezone.utc
                         ),
-                        verbose_name='Modified at',
+                        verbose_name="Modified at",
                     ),
                 ),
-                ('title', models.CharField(max_length=64, verbose_name='Name')),
+                ("title", models.CharField(max_length=64, verbose_name="Name")),
                 (
-                    'slug',
+                    "slug",
                     models.CharField(
-                        blank=True, max_length=256, unique=True, verbose_name='URL'
+                        blank=True, max_length=256, unique=True, verbose_name="URL"
                     ),
                 ),
                 (
-                    'min_ram',
-                    models.PositiveIntegerField(verbose_name='Minimum RAM (MB)'),
+                    "min_ram",
+                    models.PositiveIntegerField(verbose_name="Minimum RAM (MB)"),
                 ),
                 (
-                    'min_disk_space',
-                    models.PositiveIntegerField(verbose_name='Minimum Disk Space (MB)'),
+                    "min_disk_space",
+                    models.PositiveIntegerField(verbose_name="Minimum Disk Space (MB)"),
                 ),
             ],
             options={
-                'verbose_name': 'Game',
-                'verbose_name_plural': 'Games',
+                "verbose_name": "Game",
+                "verbose_name_plural": "Games",
             },
         ),
         migrations.CreateModel(
-            name='GameSoftware',
+            name="GameSoftware",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         blank=True,
                         default=django.utils.timezone.now,
-                        verbose_name='Created at',
+                        verbose_name="Created at",
                     ),
                 ),
                 (
-                    'modified_at',
+                    "modified_at",
                     models.DateTimeField(
                         blank=True,
                         default=datetime.datetime(
                             1970, 1, 1, 0, 0, tzinfo=datetime.timezone.utc
                         ),
-                        verbose_name='Modified at',
+                        verbose_name="Modified at",
                     ),
                 ),
-                ('name', models.CharField(max_length=64, verbose_name='Software Name')),
+                ("name", models.CharField(max_length=64, verbose_name="Software Name")),
                 (
-                    'name_suffix',
+                    "name_suffix",
                     models.CharField(
                         blank=True,
-                        default='',
+                        default="",
                         max_length=64,
-                        verbose_name='Software Name Suffix',
+                        verbose_name="Software Name Suffix",
                     ),
                 ),
                 (
-                    'default_port',
+                    "default_port",
                     models.PositiveIntegerField(
                         validators=[django.core.validators.MaxValueValidator(65535)],
-                        verbose_name='Default Port',
+                        verbose_name="Default Port",
                     ),
                 ),
                 (
-                    'game',
+                    "game",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to='server.game',
-                        verbose_name='Game',
+                        to="server.game",
+                        verbose_name="Game",
                     ),
                 ),
             ],
             options={
-                'verbose_name': 'Game Software',
-                'verbose_name_plural': 'Game Software',
+                "verbose_name": "Game Software",
+                "verbose_name_plural": "Game Software",
             },
         ),
         migrations.CreateModel(
-            name='GameSoftwareVersion',
+            name="GameSoftwareVersion",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         blank=True,
                         default=django.utils.timezone.now,
-                        verbose_name='Created at',
+                        verbose_name="Created at",
                     ),
                 ),
                 (
-                    'modified_at',
+                    "modified_at",
                     models.DateTimeField(
                         blank=True,
                         default=datetime.datetime(
                             1970, 1, 1, 0, 0, tzinfo=datetime.timezone.utc
                         ),
-                        verbose_name='Modified at',
+                        verbose_name="Modified at",
                     ),
                 ),
                 (
-                    'version',
-                    models.CharField(max_length=64, verbose_name='Software Version'),
+                    "version",
+                    models.CharField(max_length=64, verbose_name="Software Version"),
                 ),
                 (
-                    'version_suffix',
+                    "version_suffix",
                     models.CharField(
                         blank=True,
-                        default='',
+                        default="",
                         max_length=64,
-                        verbose_name='Software Version Suffix',
+                        verbose_name="Software Version Suffix",
                     ),
                 ),
                 (
-                    'software',
+                    "software",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to='server.gamesoftware',
-                        verbose_name='Game Software',
+                        to="server.gamesoftware",
+                        verbose_name="Game Software",
                     ),
                 ),
             ],
             options={
-                'verbose_name': 'Software Version',
-                'verbose_name_plural': 'Software Versions',
+                "verbose_name": "Software Version",
+                "verbose_name_plural": "Software Versions",
             },
         ),
         migrations.CreateModel(
-            name='IPNet',
+            name="IPNet",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         blank=True,
                         default=django.utils.timezone.now,
-                        verbose_name='Created at',
+                        verbose_name="Created at",
                     ),
                 ),
                 (
-                    'modified_at',
+                    "modified_at",
                     models.DateTimeField(
                         blank=True,
                         default=datetime.datetime(
                             1970, 1, 1, 0, 0, tzinfo=datetime.timezone.utc
                         ),
-                        verbose_name='Modified at',
+                        verbose_name="Modified at",
                     ),
                 ),
                 (
-                    'ip_net',
+                    "ip_net",
                     models.CharField(
                         max_length=18,
                         validators=[server.validators.validate_cidr_notation],
-                        verbose_name='CIDR Notation',
+                        verbose_name="CIDR Notation",
                     ),
                 ),
-                ('active', models.BooleanField(default=True, verbose_name='Active')),
+                ("active", models.BooleanField(default=True, verbose_name="Active")),
             ],
             options={
-                'verbose_name': 'IPNet',
-                'verbose_name_plural': 'IPNets',
+                "verbose_name": "IPNet",
+                "verbose_name_plural": "IPNets",
             },
         ),
         migrations.CreateModel(
-            name='Node',
+            name="Node",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         blank=True,
                         default=django.utils.timezone.now,
-                        verbose_name='Created at',
+                        verbose_name="Created at",
                     ),
                 ),
                 (
-                    'modified_at',
+                    "modified_at",
                     models.DateTimeField(
                         blank=True,
                         default=datetime.datetime(
                             1970, 1, 1, 0, 0, tzinfo=datetime.timezone.utc
                         ),
-                        verbose_name='Modified at',
+                        verbose_name="Modified at",
                     ),
                 ),
-                ('ip', models.GenericIPAddressField(verbose_name='IP Address')),
-                ('cores', models.PositiveIntegerField(verbose_name='Cores')),
-                ('ram', models.PositiveIntegerField(verbose_name='RAM (MB)')),
+                ("ip", models.GenericIPAddressField(verbose_name="IP Address")),
+                ("cores", models.PositiveIntegerField(verbose_name="Cores")),
+                ("ram", models.PositiveIntegerField(verbose_name="RAM (MB)")),
                 (
-                    'disk_space',
-                    models.PositiveIntegerField(verbose_name='Disk Space (GB)'),
+                    "disk_space",
+                    models.PositiveIntegerField(verbose_name="Disk Space (GB)"),
                 ),
                 (
-                    'priority',
+                    "priority",
                     models.PositiveSmallIntegerField(
-                        default=0, verbose_name='Priority'
+                        default=0, verbose_name="Priority"
                     ),
                 ),
-                ('active', models.BooleanField(default=True, verbose_name='Active')),
+                ("active", models.BooleanField(default=True, verbose_name="Active")),
             ],
             options={
-                'ordering': ('created_at', 'id'),
-                'abstract': False,
+                "ordering": ("created_at", "id"),
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='UserGameServer',
+            name="UserGameServer",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         blank=True,
                         default=django.utils.timezone.now,
-                        verbose_name='Created at',
+                        verbose_name="Created at",
                     ),
                 ),
                 (
-                    'modified_at',
+                    "modified_at",
                     models.DateTimeField(
                         blank=True,
                         default=datetime.datetime(
                             1970, 1, 1, 0, 0, tzinfo=datetime.timezone.utc
                         ),
-                        verbose_name='Modified at',
+                        verbose_name="Modified at",
                     ),
                 ),
                 (
-                    'deleted_at',
+                    "deleted_at",
                     models.DateTimeField(
                         blank=True,
                         default=datetime.datetime(
                             1970, 1, 1, 0, 0, tzinfo=datetime.timezone.utc
                         ),
-                        verbose_name='Deleted at',
+                        verbose_name="Deleted at",
                     ),
                 ),
                 (
-                    'server_name',
-                    models.CharField(max_length=64, verbose_name='Gameserver Name'),
+                    "server_name",
+                    models.CharField(max_length=64, verbose_name="Gameserver Name"),
                 ),
                 (
-                    'own_ip',
+                    "own_ip",
                     models.GenericIPAddressField(
-                        blank=True, null=True, verbose_name='Gameserver IP Address'
+                        blank=True, null=True, verbose_name="Gameserver IP Address"
                     ),
                 ),
                 (
-                    'port',
+                    "port",
                     models.PositiveIntegerField(
                         validators=[django.core.validators.MaxValueValidator(65535)],
-                        verbose_name='Gameserver Port',
+                        verbose_name="Gameserver Port",
                     ),
                 ),
-                ('ram', models.PositiveIntegerField(verbose_name='Gameserver RAM')),
+                ("ram", models.PositiveIntegerField(verbose_name="Gameserver RAM")),
                 (
-                    'disk_space',
-                    models.PositiveIntegerField(verbose_name='Gameserver Disk Space'),
+                    "disk_space",
+                    models.PositiveIntegerField(verbose_name="Gameserver Disk Space"),
                 ),
-                ('cores', models.PositiveIntegerField(verbose_name='Gameserver Cores')),
+                ("cores", models.PositiveIntegerField(verbose_name="Gameserver Cores")),
                 (
-                    'available_until',
-                    models.DateTimeField(verbose_name='Available Until'),
+                    "available_until",
+                    models.DateTimeField(verbose_name="Available Until"),
                 ),
                 (
-                    'status',
+                    "status",
                     models.CharField(
                         choices=[
-                            ('setup', 'is set up'),
-                            ('enabled', 'enabled'),
-                            ('delete', 'is being deleted'),
-                            ('deleted', 'deleted'),
-                            ('disabled', 'disabled'),
-                            ('locked', 'locked'),
+                            ("setup", "is set up"),
+                            ("enabled", "enabled"),
+                            ("delete", "is being deleted"),
+                            ("deleted", "deleted"),
+                            ("disabled", "disabled"),
+                            ("locked", "locked"),
                         ],
-                        default='setup',
+                        default="setup",
                         max_length=64,
-                        verbose_name='Gameserver Status',
+                        verbose_name="Gameserver Status",
                     ),
                 ),
                 (
-                    'sql_password',
+                    "sql_password",
                     django_cryptography.fields.encrypt(
-                        models.CharField(max_length=64, verbose_name='SQL Password')
+                        models.CharField(max_length=64, verbose_name="SQL Password")
                     ),
                 ),
                 (
-                    'ftp_password',
+                    "ftp_password",
                     django_cryptography.fields.encrypt(
-                        models.CharField(max_length=64, verbose_name='FTP Password')
+                        models.CharField(max_length=64, verbose_name="FTP Password")
                     ),
                 ),
                 (
-                    'extras',
-                    models.JSONField(default=dict, verbose_name='Additional Data'),
+                    "extras",
+                    models.JSONField(default=dict, verbose_name="Additional Data"),
                 ),
                 (
-                    'node',
+                    "node",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name='game_servers',
-                        to='server.node',
-                        verbose_name='Selected Node',
+                        related_name="game_servers",
+                        to="server.node",
+                        verbose_name="Selected Node",
                     ),
                 ),
                 (
-                    'software_version',
+                    "software_version",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name='game_servers',
-                        to='server.gamesoftwareversion',
-                        verbose_name='Gameserver Software Version',
+                        related_name="game_servers",
+                        to="server.gamesoftwareversion",
+                        verbose_name="Gameserver Software Version",
                     ),
                 ),
                 (
-                    'user',
+                    "user",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='game_servers',
+                        related_name="game_servers",
                         to=settings.AUTH_USER_MODEL,
-                        verbose_name='User',
+                        verbose_name="User",
                     ),
                 ),
             ],
             options={
-                'verbose_name': 'Gameserver',
-                'verbose_name_plural': 'Gameservers',
+                "verbose_name": "Gameserver",
+                "verbose_name_plural": "Gameservers",
             },
         ),
     ]

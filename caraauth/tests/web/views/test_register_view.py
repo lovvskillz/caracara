@@ -5,11 +5,11 @@ from rest_framework.reverse import reverse
 
 from conftest import UserFactory
 
-REGISTER_URL = reverse('web:auth:register')
+REGISTER_URL = reverse("web:auth:register")
 VALID_USER_DATA = {
-    'username': 'new_user',
-    'email': 'new.user@example.com',
-    'password': 'some-safe-password-123',
+    "username": "new_user",
+    "email": "new.user@example.com",
+    "password": "some-safe-password-123",
 }
 
 
@@ -30,9 +30,9 @@ def test__user_data_is_valid(webtest):
     assert get_user_model().objects.count() == 0
     register_page = webtest().get(REGISTER_URL)
     register_form = register_page.form
-    register_form['username'] = VALID_USER_DATA['username']
-    register_form['email'] = VALID_USER_DATA['email']
-    register_form['password'] = VALID_USER_DATA['password']
+    register_form["username"] = VALID_USER_DATA["username"]
+    register_form["email"] = VALID_USER_DATA["email"]
+    register_form["password"] = VALID_USER_DATA["password"]
 
     response = register_form.submit().follow()
 
@@ -62,9 +62,9 @@ def test__invalid_field_data(webtest):
     """
     register_page = webtest().get(REGISTER_URL)
     register_form = register_page.form
-    register_form['username'] = 'new_user@-./'
-    register_form['email'] = 'invalid.mail.com'
-    register_form['password'] = 'short'
+    register_form["username"] = "new_user@-./"
+    register_form["email"] = "invalid.mail.com"
+    register_form["password"] = "short"
 
     response = register_form.submit()
 
@@ -78,36 +78,35 @@ def test__invalid_field_data(webtest):
     )
     assert (
         "Enter a valid password. Should be at least 8 characters long"
-        " containing letters and numbers."
-        in response.form.text
+        " containing letters and numbers." in response.form.text
     )
 
 
 @mark.parametrize(
-    'username, email, duplicated_field, error',
+    "username, email, duplicated_field, error",
     [
         (
-            VALID_USER_DATA['username'],
-            'another.mail@example.com',
-            'username',
+            VALID_USER_DATA["username"],
+            "another.mail@example.com",
+            "username",
             "This username is already taken.",
         ),
         (
-            VALID_USER_DATA['username'].upper(),
-            'another.mail@example.com',
-            'username',
+            VALID_USER_DATA["username"].upper(),
+            "another.mail@example.com",
+            "username",
             "This username is already taken.",
         ),
         (
-            'just_a_username',
-            VALID_USER_DATA['email'],
-            'email',
+            "just_a_username",
+            VALID_USER_DATA["email"],
+            "email",
             "This email address is already taken.",
         ),
         (
-            'just_a_username',
-            VALID_USER_DATA['email'].upper(),
-            'email',
+            "just_a_username",
+            VALID_USER_DATA["email"].upper(),
+            "email",
             "This email address is already taken.",
         ),
     ],
@@ -118,13 +117,13 @@ def test__duplicated_user_data(webtest, username, email, duplicated_field, error
     Ensure users with duplicated username or email can't be created.
     """
     UserFactory.create(
-        username=username, email=email, password=VALID_USER_DATA['password']
+        username=username, email=email, password=VALID_USER_DATA["password"]
     )
     register_page = webtest().get(REGISTER_URL)
     register_form = register_page.form
-    register_form['username'] = username
-    register_form['email'] = email
-    register_form['password'] = VALID_USER_DATA['password']
+    register_form["username"] = username
+    register_form["email"] = email
+    register_form["password"] = VALID_USER_DATA["password"]
 
     response = register_form.submit()
 

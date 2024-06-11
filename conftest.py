@@ -2,10 +2,7 @@ from datetime import timedelta
 
 from django_webtest import WebTest
 from durin.models import AuthToken, Client
-from factory import Sequence
-from factory.django import DjangoModelFactory
 from pytest import fixture
-from pytest_factoryboy import register
 from rest_framework.test import APIClient
 
 from caraauth.models import User
@@ -34,7 +31,7 @@ def web_client():
     """
     Return web client (durin) for api calls.
     """
-    return Client.objects.get_or_create(name='web', token_ttl=timedelta(days=1))[0]
+    return Client.objects.get_or_create(name="web", token_ttl=timedelta(days=1))[0]
 
 
 @fixture
@@ -48,13 +45,13 @@ def apitest(web_client):
         Return API client with optional authorization header if user is set.
         """
         api_client = APIClient()
-        headers = {'HTTP_X_API_CLIENT': web_client.name}
+        headers = {"HTTP_X_API_CLIENT": web_client.name}
         if user:
             try:
                 token = AuthToken.objects.get(user=user, client=web_client)
             except AuthToken.DoesNotExist:
                 token = AuthToken.objects.create(user=user, client=web_client)
-            headers['HTTP_AUTHORIZATION'] = f'Bearer {token.token}'
+            headers["HTTP_AUTHORIZATION"] = f"Bearer {token.token}"
         api_client.credentials(**headers)
         return api_client
 

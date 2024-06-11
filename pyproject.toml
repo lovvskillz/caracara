@@ -26,28 +26,24 @@ pre-commit = "^2.21.0"
 pytest-factoryboy = "^2.5.1"
 freezegun = "^1.2.2"
 django-webtest = "^1.9.10"
-ruff = "^0.3.7"
+ruff = "^0.4.8"
 
-[tool.black]
+[tool.ruff]
 line-length = 88
-skip-string-normalization=true
-experimental-string-processing = true
-target-version = ["py310"]
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-  | frontend
-)/
-'''
+indent-width = 4
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "B0",   # flake8-bugbear
+    "E",    # pycodestyle Error
+    "F",    # Pyflakes
+    "I",    # isort
+    "DJ",   # flake8-django
+]
+ignore = [
+    "E501", # line-too-long
+]
 
 [build-system]
 requires = ["poetry-core"]

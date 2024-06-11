@@ -63,12 +63,12 @@ class User(AbstractUser, BaseModel):
     def disable_2fa(self):
         return two_fa.delete_devices_for_user(self)
 
-    def get_or_create_totp_device(self, confirmed: bool = False) -> 'TOTPDevice':
+    def get_or_create_totp_device(self, confirmed: bool = False) -> "TOTPDevice":
         """
         Return existing TOTP Device or create new one.
         """
         if not (device := two_fa.get_user_totp_device(self)):
-            device = self.totpdevice_set.create(confirmed=confirmed, name='default')
+            device = self.totpdevice_set.create(confirmed=confirmed, name="default")
         return device
 
     def create_static_device(self):

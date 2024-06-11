@@ -5,14 +5,14 @@ from server.validators import validate_cidr_notation
 
 
 @mark.parametrize(
-    'ip_net',
+    "ip_net",
     [
-        '123.123.123.248/29',
-        '123.123.123.0/24',
-        '192.168.0.0/24',
-        '255.255.255.0/24',
-        '1.1.1.0/24',
-        '89.45.19.0/24',
+        "123.123.123.248/29",
+        "123.123.123.0/24",
+        "192.168.0.0/24",
+        "255.255.255.0/24",
+        "1.1.1.0/24",
+        "89.45.19.0/24",
     ],
 )
 def test__cidr_validator__valid_notation(ip_net: str):
@@ -23,7 +23,7 @@ def test__cidr_validator__valid_notation(ip_net: str):
 
 
 @mark.parametrize(
-    'ip_net', ['123.123.123.0/33', '256.255.255.0/24', 'not valid', '123.123.l23.0/24']
+    "ip_net", ["123.123.123.0/33", "256.255.255.0/24", "not valid", "123.123.l23.0/24"]
 )
 def test__cidr_validator__invalid_notation(ip_net: str):
     """
@@ -38,10 +38,10 @@ def test__cidr_validator__invalid_notation(ip_net: str):
 
 
 @mark.parametrize(
-    'ip_net, error_message',
+    "ip_net, error_message",
     [
-        ('123.123.224.0/23', "The subnet mask should not be lower than 24."),
-        ('123.123.123.252/30', "The subnet mask should not be greater than 29."),
+        ("123.123.224.0/23", "The subnet mask should not be lower than 24."),
+        ("123.123.123.252/30", "The subnet mask should not be greater than 29."),
     ],
 )
 def test__cidr_validator__out_of_reasonable_subnet_mask_range(
@@ -57,12 +57,12 @@ def test__cidr_validator__out_of_reasonable_subnet_mask_range(
 
 
 @mark.parametrize(
-    'ip_net, expected_ip_net',
+    "ip_net, expected_ip_net",
     [
-        ('123.123.224.1/24', '123.123.224.0/24'),
-        ('123.123.224.130/25', '123.123.224.128/25'),
-        ('123.123.123.68/28', '123.123.123.64/28'),
-        ('123.123.123.252/29', '123.123.123.248/29'),
+        ("123.123.224.1/24", "123.123.224.0/24"),
+        ("123.123.224.130/25", "123.123.224.128/25"),
+        ("123.123.123.68/28", "123.123.123.64/28"),
+        ("123.123.123.252/29", "123.123.123.248/29"),
     ],
 )
 def test__cidr_validator__invalid_network_prefix(ip_net: str, expected_ip_net: str):

@@ -9,102 +9,101 @@ import caraauth.validators
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('auth', '0012_alter_user_first_name_max_length'),
+        ("auth", "0012_alter_user_first_name_max_length"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='User',
+            name="User",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
                 (
-                    'is_superuser',
+                    "is_superuser",
                     models.BooleanField(
                         default=False,
                         help_text=(
-                            'Designates that this user has all permissions without'
-                            ' explicitly assigning them.'
+                            "Designates that this user has all permissions without"
+                            " explicitly assigning them."
                         ),
-                        verbose_name='superuser status',
+                        verbose_name="superuser status",
                     ),
                 ),
                 (
-                    'first_name',
+                    "first_name",
                     models.CharField(
-                        blank=True, max_length=150, verbose_name='first name'
+                        blank=True, max_length=150, verbose_name="first name"
                     ),
                 ),
                 (
-                    'last_name',
+                    "last_name",
                     models.CharField(
-                        blank=True, max_length=150, verbose_name='last name'
+                        blank=True, max_length=150, verbose_name="last name"
                     ),
                 ),
                 (
-                    'is_staff',
+                    "is_staff",
                     models.BooleanField(
                         default=False,
                         help_text=(
-                            'Designates whether the user can log into this admin site.'
+                            "Designates whether the user can log into this admin site."
                         ),
-                        verbose_name='staff status',
+                        verbose_name="staff status",
                     ),
                 ),
                 (
-                    'is_active',
+                    "is_active",
                     models.BooleanField(
                         default=True,
                         help_text=(
-                            'Designates whether this user should be treated as active.'
-                            ' Unselect this instead of deleting accounts.'
+                            "Designates whether this user should be treated as active."
+                            " Unselect this instead of deleting accounts."
                         ),
-                        verbose_name='active',
+                        verbose_name="active",
                     ),
                 ),
                 (
-                    'date_joined',
+                    "date_joined",
                     models.DateTimeField(
-                        default=django.utils.timezone.now, verbose_name='date joined'
+                        default=django.utils.timezone.now, verbose_name="date joined"
                     ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         blank=True,
                         default=django.utils.timezone.now,
-                        verbose_name='Created at',
+                        verbose_name="Created at",
                     ),
                 ),
                 (
-                    'modified_at',
+                    "modified_at",
                     models.DateTimeField(
                         blank=True,
                         default=datetime.datetime(
                             1970, 1, 1, 0, 0, tzinfo=datetime.timezone.utc
                         ),
-                        verbose_name='Modified at',
+                        verbose_name="Modified at",
                     ),
                 ),
                 (
-                    'username',
+                    "username",
                     models.CharField(
                         error_messages={
-                            'unique': 'A user with that username already exists.'
+                            "unique": "A user with that username already exists."
                         },
                         help_text=(
-                            'Required. 5 - 64 characters. Letters, digits and _ only.'
+                            "Required. 5 - 64 characters. Letters, digits and _ only."
                         ),
                         max_length=64,
                         unique=True,
@@ -112,66 +111,66 @@ class Migration(migrations.Migration):
                             django.core.validators.MinLengthValidator(limit_value=5),
                             caraauth.validators.UsernameValidator(),
                         ],
-                        verbose_name='username',
+                        verbose_name="username",
                     ),
                 ),
                 (
-                    'email',
+                    "email",
                     models.EmailField(
-                        max_length=254, unique=True, verbose_name='email address'
+                        max_length=254, unique=True, verbose_name="email address"
                     ),
                 ),
                 (
-                    'password',
+                    "password",
                     models.CharField(
                         help_text=(
-                            'Required. Need to have at least 8 characters containing'
-                            ' letters and digits.'
+                            "Required. Need to have at least 8 characters containing"
+                            " letters and digits."
                         ),
                         max_length=128,
                         validators=[caraauth.validators.PasswordValidator()],
-                        verbose_name='password',
+                        verbose_name="password",
                     ),
                 ),
                 (
-                    'last_login',
+                    "last_login",
                     models.DateTimeField(
-                        default=django.utils.timezone.now, verbose_name='Last Login'
+                        default=django.utils.timezone.now, verbose_name="Last Login"
                     ),
                 ),
                 (
-                    'groups',
+                    "groups",
                     models.ManyToManyField(
                         blank=True,
                         help_text=(
-                            'The groups this user belongs to. A user will get all'
-                            ' permissions granted to each of their groups.'
+                            "The groups this user belongs to. A user will get all"
+                            " permissions granted to each of their groups."
                         ),
-                        related_name='user_set',
-                        related_query_name='user',
-                        to='auth.group',
-                        verbose_name='groups',
+                        related_name="user_set",
+                        related_query_name="user",
+                        to="auth.group",
+                        verbose_name="groups",
                     ),
                 ),
                 (
-                    'user_permissions',
+                    "user_permissions",
                     models.ManyToManyField(
                         blank=True,
-                        help_text='Specific permissions for this user.',
-                        related_name='user_set',
-                        related_query_name='user',
-                        to='auth.permission',
-                        verbose_name='user permissions',
+                        help_text="Specific permissions for this user.",
+                        related_name="user_set",
+                        related_query_name="user",
+                        to="auth.permission",
+                        verbose_name="user permissions",
                     ),
                 ),
             ],
             options={
-                'verbose_name': 'user',
-                'verbose_name_plural': 'users',
-                'abstract': False,
+                "verbose_name": "user",
+                "verbose_name_plural": "users",
+                "abstract": False,
             },
             managers=[
-                ('objects', django.contrib.auth.models.UserManager()),
+                ("objects", django.contrib.auth.models.UserManager()),
             ],
         ),
     ]

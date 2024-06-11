@@ -2,9 +2,9 @@ from django.urls import path
 
 from user_area.views.web import user
 
-app_name = 'user_area'
+app_name = "user_area"
 
 urlpatterns = [
-    path('dashboard/', user.DashboardView.as_view(), name='dashboard'),
-    path('profile/', user.ProfileView.as_view(), name='profile'),
+    path("dashboard/", user.DashboardView.as_view(), name="dashboard"),
+    path("profile/", user.ProfileView.as_view(), name="profile"),
 ]

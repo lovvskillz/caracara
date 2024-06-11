@@ -9,21 +9,21 @@ if TYPE_CHECKING:
     from caraauth.models import User
 
 
-def default_device(user: 'User') -> Union[Union['TOTPDevice', 'StaticToken'], bool]:
+def default_device(user: "User") -> Union[Union["TOTPDevice", "StaticToken"], bool]:
     """
     Return the user's default device.
     """
     if not user or user.is_anonymous:
         return False
     device = get_user_totp_device(user, True)
-    if device is not None and device.name == 'default':
+    if device is not None and device.name == "default":
         return device
     return False
 
 
 def get_user_totp_device(
-    user: 'User', confirmed: Optional[bool] = None
-) -> Optional['TOTPDevice']:
+    user: "User", confirmed: Optional[bool] = None
+) -> Optional["TOTPDevice"]:
     """
     Return user's TOTP device.
     """
@@ -34,7 +34,7 @@ def get_user_totp_device(
     return None
 
 
-def confirm_totp_device_token(user: 'User', token: str) -> bool:
+def confirm_totp_device_token(user: "User", token: str) -> bool:
     """
     Return weather the token is valid for a TOTP device.
     """
@@ -49,7 +49,7 @@ def confirm_totp_device_token(user: 'User', token: str) -> bool:
     return False
 
 
-def verify_totp_device(user: 'User', token: str) -> bool:
+def verify_totp_device(user: "User", token: str) -> bool:
     """
     Verify a TOTP device.
     """
@@ -66,7 +66,7 @@ def verify_totp_device(user: 'User', token: str) -> bool:
     return False
 
 
-def confirm_static_device_token(user: 'User', token: str) -> bool:
+def confirm_static_device_token(user: "User", token: str) -> bool:
     """
     Return weather the token is valid for a static device.
     """
@@ -82,8 +82,8 @@ def confirm_static_device_token(user: 'User', token: str) -> bool:
 
 
 def get_user_static_device(
-    user: 'User', confirmed: Optional[bool] = True
-) -> Optional['StaticDevice']:
+    user: "User", confirmed: Optional[bool] = True
+) -> Optional["StaticDevice"]:
     """
     Return the first static device for a user.
     """
@@ -94,7 +94,7 @@ def get_user_static_device(
     return None
 
 
-def create_static_device(user: 'User') -> 'QuerySet':
+def create_static_device(user: "User") -> "QuerySet":
     """
     Create a static device and return 6 tokens.
     """
@@ -104,18 +104,18 @@ def create_static_device(user: 'User') -> 'QuerySet':
     return generate_static_device_tokens(device)
 
 
-def generate_static_device_tokens(device: 'StaticDevice') -> 'QuerySet':
+def generate_static_device_tokens(device: "StaticDevice") -> "QuerySet":
     """
     Generate new static device tokens for the given user.
     """
     device.token_set.all().delete()
-    for n in range(6):
+    for _ in range(6):
         token = StaticToken.random_token()
         device.token_set.create(token=token)
     return device.token_set.all()
 
 
-def get_static_device_tokens(user: 'User') -> Union['QuerySet', list]:
+def get_static_device_tokens(user: "User") -> Union["QuerySet", list]:
     """
     Return tokens for a user's static device.
     """
@@ -125,7 +125,7 @@ def get_static_device_tokens(user: 'User') -> Union['QuerySet', list]:
     return []
 
 
-def confirm_any_device_token(user: 'User', token: str) -> bool:
+def confirm_any_device_token(user: "User", token: str) -> bool:
     """
     Return weather the token is valid for a TOTP or a static device.
     """
@@ -134,7 +134,7 @@ def confirm_any_device_token(user: 'User', token: str) -> bool:
     return confirm_static_device_token(user, token)
 
 
-def delete_devices_for_user(user: 'User') -> bool:
+def delete_devices_for_user(user: "User") -> bool:
     """
     Delete user's devices.
     """

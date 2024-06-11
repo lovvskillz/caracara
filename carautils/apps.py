@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class CarautilsConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'carautils'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "carautils"

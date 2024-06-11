@@ -11,7 +11,7 @@ from caraauth.validators import PasswordValidator, UsernameValidator
 
 
 def token_length_validator(token: str):
-    if not len(token) in [6, 8]:
+    if len(token) not in [6, 8]:
         raise serializers.ValidationError(
             _("The token length needs to be 6 or 8 characters long.")
         )
@@ -37,7 +37,7 @@ class OTPSerializer(serializers.Serializer):
     )
 
     def __init__(self, *args, **kwargs):
-        self.user: User = kwargs.pop('user', None)
+        self.user: User = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
     def validate_otp(self, otp):
@@ -81,11 +81,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['email', 'username']
+        fields = ["email", "username"]
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-
     new_password = fields.CharField(
         write_only=True, validators=[PasswordValidator()], required=False
     )
@@ -96,17 +95,17 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = [
-            'username',
-            'email',
-            'new_password',
-            'confirm_new_password',
-            'date_joined',
-            'has_2fa_enabled',
-            'last_login',
+            "username",
+            "email",
+            "new_password",
+            "confirm_new_password",
+            "date_joined",
+            "has_2fa_enabled",
+            "last_login",
         ]
         read_only_fields = [
-            'date_joined',
-            'last_login',
+            "date_joined",
+            "last_login",
         ]
 
     def validate(self, attrs):
@@ -115,58 +114,58 @@ class UserProfileSerializer(serializers.ModelSerializer):
         """
         attrs = super().validate(attrs)
         if self._validate_new_password(attrs):
-            attrs['password'] = make_password(attrs.get('new_password'))
+            attrs["password"] = make_password(attrs.get("new_password"))
         return attrs
 
     def _validate_new_password(self, attrs):
-        if not (new_password := attrs.get('new_password')):
+        if not (new_password := attrs.get("new_password")):
             return
-        if new_password != attrs.get('confirm_new_password'):
-            raise ValidationError({'new_password': _("New password does not match!")})
+        if new_password != attrs.get("confirm_new_password"):
+            raise ValidationError({"new_password": _("New password does not match!")})
         return True
 
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ['email', 'username', 'password']
+        fields = ["email", "username", "password"]
         extra_kwargs = {
-            'password': {'write_only': True, 'style': {'input_type': 'password'}},
-            'username': {
-                'validators': [
+            "password": {"write_only": True, "style": {"input_type": "password"}},
+            "username": {
+                "validators": [
                     UsernameValidator(),
                     UniqueValidator(
                         queryset=get_user_model().objects.all(),
-                        lookup='iexact',
+                        lookup="iexact",
                         message=_("This username is already taken."),
                     ),
                 ]
             },
-            'email': {
-                'validators': [
+            "email": {
+                "validators": [
                     UniqueValidator(
                         queryset=get_user_model().objects.all(),
-                        lookup='iexact',
+                        lookup="iexact",
                         message=_("This email address is already taken."),
                     )
                 ]
             },
         }
 
-    def create(self, validated_data) -> 'User':
+    def create(self, validated_data) -> "User":
         """
         Create a new user.
         """
         user = get_user_model()(
-            email=validated_data.get('email'), username=validated_data.get('username')
+            email=validated_data.get("email"), username=validated_data.get("username")
         )
-        user.set_password(validated_data.get('password'))
+        user.set_password(validated_data.get("password"))
         user.save()
         return user
 
     def validate(self, attrs):
         user = self.create(attrs)
-        attrs['user'] = user
+        attrs["user"] = user
         return attrs
 
 
@@ -177,17 +176,17 @@ class LoginSerializer(serializers.ModelSerializer, OTPSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['username', 'password', 'otp']
+        fields = ["username", "password", "otp"]
         extra_kwargs = {
-            'password': {'write_only': True, 'style': {'input_type': 'password'}}
+            "password": {"write_only": True, "style": {"input_type": "password"}}
         }
 
     def validate(self, attrs):
-        username_or_email = attrs.get('username')
-        password = attrs.get('password')
-        token = attrs.get('otp', '')
+        username_or_email = attrs.get("username")
+        password = attrs.get("password")
+        token = attrs.get("otp", "")
         user = authenticate(
-            self.context.get('request'), username=username_or_email, password=password
+            self.context.get("request"), username=username_or_email, password=password
         )
         if not user:
             raise serializers.ValidationError(
@@ -195,18 +194,18 @@ class LoginSerializer(serializers.ModelSerializer, OTPSerializer):
                     "No account was found with this username / email address and"
                     " password!"
                 ),
-                code='authorization',
+                code="authorization",
             )
         if not user.is_active:
             raise serializers.ValidationError(
                 detail=_("This account is inactive."),
-                code='authorization',
+                code="authorization",
             )
         if user.has_2fa_enabled and not confirm_any_device_token(user, token):
             raise serializers.ValidationError(
-                detail={'otp': _("Token is not valid")}, code='authorization'
+                detail={"otp": _("Token is not valid")}, code="authorization"
             )
         user.update_last_login()
         user.save()
-        attrs['user'] = user
+        attrs["user"] = user
         return attrs

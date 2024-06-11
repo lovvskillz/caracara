@@ -7,7 +7,7 @@ from rest_framework.reverse import reverse
 from caraauth.models import User
 from caraauth.serializers import UserProfileSerializer
 
-profile_url = reverse('api:user_area:profile')
+profile_url = reverse("api:user_area:profile")
 
 
 @mark.django_db
@@ -39,11 +39,11 @@ def test_update_user_profile__success(apitest, user):
     Update user profile successfully.
     """
     user_data_response = UserProfileSerializer(instance=user).data
-    user_data_response['username'] = 'new_user_name'
+    user_data_response["username"] = "new_user_name"
     user_data = user_data_response.copy()
-    new_password = 'MyS3CRETPassw0rd'
+    new_password = "MyS3CRETPassw0rd"
     user_data.update(
-        {'new_password': new_password, 'confirm_new_password': new_password}
+        {"new_password": new_password, "confirm_new_password": new_password}
     )
 
     response = apitest(user).post(profile_url, data=user_data)
@@ -51,55 +51,55 @@ def test_update_user_profile__success(apitest, user):
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data == user_data_response
-    assert updated_user.username == 'new_user_name'
+    assert updated_user.username == "new_user_name"
     assert updated_user.check_password(new_password)
 
 
 @mark.parametrize(
-    'data, error',
+    "data, error",
     [
         (
-            {'username': '123'},
+            {"username": "123"},
             {
-                'username': [
+                "username": [
                     ErrorDetail(
                         string="Ensure this field has at least 5 characters.",
-                        code='min_length',
+                        code="min_length",
                     )
                 ]
             },
         ),
         (
-            {'new_password': 'invalid', 'confirm_new_password': 'invalid'},
+            {"new_password": "invalid", "confirm_new_password": "invalid"},
             {
-                'new_password': [
+                "new_password": [
                     ErrorDetail(
                         string=(
                             "Enter a valid password. Should be at least 8 characters"
                             " long containing letters and numbers."
                         ),
-                        code='invalid',
+                        code="invalid",
                     )
                 ],
-                'confirm_new_password': [
+                "confirm_new_password": [
                     ErrorDetail(
                         string=(
                             "Enter a valid password. Should be at least 8 characters"
                             " long containing letters and numbers."
                         ),
-                        code='invalid',
+                        code="invalid",
                     )
                 ],
             },
         ),
         (
             {
-                'new_password': 'SomeVal1dP4ssword',
-                'confirm_new_password': 'N0tTheSameP4ssword',
+                "new_password": "SomeVal1dP4ssword",
+                "confirm_new_password": "N0tTheSameP4ssword",
             },
             {
-                'new_password': [
-                    ErrorDetail(string="New password does not match!", code='invalid')
+                "new_password": [
+                    ErrorDetail(string="New password does not match!", code="invalid")
                 ]
             },
         ),

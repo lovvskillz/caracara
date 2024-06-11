@@ -6,10 +6,10 @@ from pytest import mark
 from rest_framework import status
 from rest_framework.reverse import reverse
 
-setup_2fa_url = reverse('api:user_area:2fa_setup')
-disable_2fa_url = reverse('api:user_area:2fa_disable')
-backup_tokens_url = reverse('api:user_area:2fa_static_tokens')
-refresh_tokens_url = reverse('api:user_area:2fa_refresh_static_tokens')
+setup_2fa_url = reverse("api:user_area:2fa_setup")
+disable_2fa_url = reverse("api:user_area:2fa_disable")
+backup_tokens_url = reverse("api:user_area:2fa_static_tokens")
+refresh_tokens_url = reverse("api:user_area:2fa_refresh_static_tokens")
 
 
 @mark.django_db
@@ -17,21 +17,21 @@ def test__setup_2fa__success(user, apitest):
     # setup totp device
     response = apitest(user).get(setup_2fa_url)
     assert response.status_code == status.HTTP_200_OK
-    assert 'totp_secret' in response.data
-    assert 'config_url' in response.data
+    assert "totp_secret" in response.data
+    assert "config_url" in response.data
 
     # generate token
     totp_device = TOTPDevice.objects.first()
     totp = TOTP(totp_device.bin_key)
     totp.time = time()
     token = str(totp.token())
-    data = {'otp': token.rjust(6, '0')}
+    data = {"otp": token.rjust(6, "0")}
 
     # confirm 2fa setup
     response = apitest(user).post(setup_2fa_url, data=data)
     assert response.status_code == status.HTTP_200_OK
-    assert response.data['static_tokens'] == list(
-        user.static_device_tokens.values_list('token', flat=True)
+    assert response.data["static_tokens"] == list(
+        user.static_device_tokens.values_list("token", flat=True)
     )
     assert user.has_2fa_enabled
 
@@ -54,9 +54,9 @@ def test__get_2fa_static_device_tokens(user_2fa, apitest):
     response = apitest(user_2fa).get(backup_tokens_url)
 
     assert response.status_code == status.HTTP_200_OK
-    assert len(response.data['static_tokens']) == 6
-    assert response.data['static_tokens'] == list(
-        user_2fa.static_device_tokens.values_list('token', flat=True)
+    assert len(response.data["static_tokens"]) == 6
+    assert response.data["static_tokens"] == list(
+        user_2fa.static_device_tokens.values_list("token", flat=True)
     )
 
 
@@ -79,7 +79,7 @@ def test__remove_2fa(user_2fa, apitest):
     totp = TOTP(totp_device.bin_key)
     totp.time = time()
     token = str(totp.token())
-    data = {'otp': token.rjust(6, '0')}
+    data = {"otp": token.rjust(6, "0")}
 
     response = apitest(user_2fa).post(disable_2fa_url, data=data)
 
@@ -92,7 +92,7 @@ def test__remove_2fa__invalid_otp(user_2fa, apitest):
     """
     Ensure that 2FA is still enabled for an invalid request.
     """
-    data = {'otp': 'abcd1234'}
+    data = {"otp": "abcd1234"}
 
     response = apitest(user_2fa).post(disable_2fa_url, data=data)
 

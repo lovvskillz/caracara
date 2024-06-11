@@ -10,12 +10,12 @@ def test_get_available_own_ip__first_available_ip():
     """
     Ensure that the first available ip address is returned.
     """
-    IPNetFactory.create(ip_net='192.168.1.0/24')
+    IPNetFactory.create(ip_net="192.168.1.0/24")
 
     ip = get_available_own_ip()
 
     assert IPNet.objects.count() == 1
-    assert ip == '192.168.1.1'
+    assert ip == "192.168.1.1"
 
 
 @mark.django_db
@@ -34,9 +34,9 @@ def test_get_available_own_ip__all_ips_taken():
     """
     Ensure that no ip is returned if all ip addresses are taken..
     """
-    IPNetFactory.create(ip_net='192.168.1.0/29')
+    IPNetFactory.create(ip_net="192.168.1.0/29")
     for i in range(1, 7):
-        UserGameserverFactory.create(own_ip=f'192.168.1.{i}')
+        UserGameserverFactory.create(own_ip=f"192.168.1.{i}")
 
     ip = get_available_own_ip()
 

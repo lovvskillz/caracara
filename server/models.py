@@ -11,12 +11,12 @@ from server.validators import validate_cidr_notation
 
 port_validator = MaxValueValidator(65535)
 
-GAMESERVER_SETUP = 'setup'
-GAMESERVER_ENABLED = 'enabled'
-GAMESERVER_DELETE = 'delete'
-GAMESERVER_DELETED = 'deleted'
-GAMESERVER_DISABLED = 'disabled'
-GAMESERVER_LOCKED = 'locked'
+GAMESERVER_SETUP = "setup"
+GAMESERVER_ENABLED = "enabled"
+GAMESERVER_DELETE = "delete"
+GAMESERVER_DELETED = "deleted"
+GAMESERVER_DISABLED = "disabled"
+GAMESERVER_LOCKED = "locked"
 GAMESERVER_STATES = (
     (GAMESERVER_SETUP, _("is set up")),
     (GAMESERVER_ENABLED, _("enabled")),
@@ -46,7 +46,7 @@ class Node(BaseModel):
 
     class Meta:
         ordering = [
-            '-priority',
+            "-priority",
         ]
 
 
@@ -70,7 +70,7 @@ class IPNet(BaseModel):
         """
         Split the IP net and return network prefix and suffix as a tuple.
         """
-        network_prefix, suffix = tuple(self.ip_net.split('/'))
+        network_prefix, suffix = tuple(self.ip_net.split("/"))
         return network_prefix, int(suffix)
 
     @property
@@ -113,7 +113,7 @@ class GameSoftware(BaseModel):
     The GameSoftware model defines a game software.
     """
 
-    game = models.ForeignKey('Game', on_delete=models.CASCADE, verbose_name=_("Game"))
+    game = models.ForeignKey("Game", on_delete=models.CASCADE, verbose_name=_("Game"))
     name = models.CharField(_("Software Name"), max_length=64)
     name_suffix = models.CharField(
         _("Software Name Suffix"), max_length=64, blank=True, default=""
@@ -139,7 +139,7 @@ class GameSoftwareVersion(BaseModel):
     """
 
     software = models.ForeignKey(
-        'GameSoftware', on_delete=models.CASCADE, verbose_name=_("Game Software")
+        "GameSoftware", on_delete=models.CASCADE, verbose_name=_("Game Software")
     )
     version = models.CharField(_("Software Version"), max_length=64)
     version_suffix = models.CharField(
@@ -160,20 +160,20 @@ class UserGameServer(SoftDeleteModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         verbose_name=_("User"),
-        related_name='game_servers',
+        related_name="game_servers",
     )
     server_name = models.CharField(_("Gameserver Name"), max_length=64)
     software_version = models.ForeignKey(
-        'GameSoftwareVersion',
+        "GameSoftwareVersion",
         on_delete=models.PROTECT,
         verbose_name=_("Gameserver Software Version"),
-        related_name='game_servers',
+        related_name="game_servers",
     )
     node = models.ForeignKey(
-        'Node',
+        "Node",
         on_delete=models.PROTECT,
         verbose_name=_("Selected Node"),
-        related_name='game_servers',
+        related_name="game_servers",
     )
     own_ip = models.GenericIPAddressField(
         _("Gameserver IP Address"), blank=True, null=True

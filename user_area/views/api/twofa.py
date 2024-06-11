@@ -18,8 +18,8 @@ class Setup2FAView(APIView):
     def get(self, request, *args, **kwargs):
         device = request.user.enable_2fa()
         data = {
-            'totp_secret': b32encode(device.bin_key).decode(),
-            'config_url': device.config_url,
+            "totp_secret": b32encode(device.bin_key).decode(),
+            "config_url": device.config_url,
         }
         return Response(data=data)
 
@@ -30,7 +30,7 @@ class Setup2FAView(APIView):
         otp_serializer.is_valid(raise_exception=True)
         tokens = request.user.create_static_device()
         static_token_serializer = StaticTokenSerializer(tokens, many=True)
-        return Response(data={'static_tokens': static_token_serializer.data})
+        return Response(data={"static_tokens": static_token_serializer.data})
 
 
 class BackupTokensView(APIView):
@@ -39,7 +39,7 @@ class BackupTokensView(APIView):
     def get(self, request, *args, **kwargs):
         tokens = request.user.static_device_tokens
         static_token_serializer = StaticTokenSerializer(tokens, many=True)
-        return Response(data={'static_tokens': static_token_serializer.data})
+        return Response(data={"static_tokens": static_token_serializer.data})
 
 
 class RefreshBackupTokensView(APIView):
@@ -48,7 +48,7 @@ class RefreshBackupTokensView(APIView):
     def post(self, request, *args, **kwargs):
         tokens = request.user.refresh_static_device_tokens()
         static_token_serializer = StaticTokenSerializer(tokens, many=True)
-        return Response(data={'static_tokens': static_token_serializer.data})
+        return Response(data={"static_tokens": static_token_serializer.data})
 
 
 class Disable2FAView(APIView):
@@ -57,7 +57,7 @@ class Disable2FAView(APIView):
     def post(self, request, *args, **kwargs):
         otp_serializer = OTPSerializer(data=request.data)
         otp_serializer.is_valid(raise_exception=True)
-        otp = otp_serializer.validated_data.get('otp')
+        otp = otp_serializer.validated_data.get("otp")
         if request.user.confirm_any_device_by_otp(otp):
             request.user.disable_2fa()
             return Response(status=status.HTTP_200_OK)

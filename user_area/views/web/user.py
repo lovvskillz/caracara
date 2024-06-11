@@ -5,13 +5,13 @@ from caraauth.serializers import UserProfileSerializer
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
-    template_name = 'user_area/dashboard.html'
+    template_name = "user_area/dashboard.html"
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
-    template_name = 'user_area/profile.html'
+    template_name = "user_area/profile.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['user_profile_form'] = UserProfileSerializer()
+        context["user_profile_form"] = UserProfileSerializer()
         return context

@@ -20,7 +20,7 @@ from server.models import (
 
 
 def generate_ip():
-    return '.'.join(
+    return ".".join(
         [
             str(randint(1, 255)),
             str(randint(1, 255)),
@@ -33,7 +33,7 @@ def generate_ip():
 def generate_ip_net(suffix: int = 24):
     remaining_bits = 32 - suffix
     last_byte = 256 - 2**remaining_bits
-    ip = '.'.join(
+    ip = ".".join(
         [
             str(randint(1, 255)),
             str(randint(1, 255)),
@@ -41,7 +41,7 @@ def generate_ip_net(suffix: int = 24):
             str(last_byte),
         ]
     )
-    return f'{ip}/{suffix}'
+    return f"{ip}/{suffix}"
 
 
 @register

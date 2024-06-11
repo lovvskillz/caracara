@@ -20,7 +20,7 @@ class RegisterView(AuthMixin):
     permission_classes = (IsAnonymous,)
     serializer_class = RegisterSerializer
 
-    def get_token_obj(self, request, client: 'Client') -> 'AuthToken':
+    def get_token_obj(self, request, client: "Client") -> "AuthToken":
         return AuthToken.objects.create(request.user, client)
 
 

@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from datetime import datetime
 
 
-def add_days_to_now(days: int = 0) -> 'datetime':
+def add_days_to_now(days: int = 0) -> "datetime":
     """
     Append days to current datetime.
     """

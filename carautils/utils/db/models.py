@@ -21,7 +21,7 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ('created_at', 'id')
+        ordering = ("created_at", "id")
 
 
 class SoftDeleteModel(BaseModel):
@@ -30,13 +30,13 @@ class SoftDeleteModel(BaseModel):
     """
 
     deleted_at = models.DateTimeField(
-        default=POSIX_ZERO, blank=True, verbose_name=_('Deleted at')
+        default=POSIX_ZERO, blank=True, verbose_name=_("Deleted at")
     )
     objects = SoftDeleteManager()
 
     class Meta:
         abstract = True
-        ordering = ('created_at', 'id')
+        ordering = ("created_at", "id")
 
     def save(self, *args, **kwargs):
         self.modified_at = timezone.now()
@@ -46,4 +46,4 @@ class SoftDeleteModel(BaseModel):
         now = timezone.now()
         self.deleted_at = now
         self.modified_at = now
-        self.save(update_fields=['deleted_at', 'modified_at'])
+        self.save(update_fields=["deleted_at", "modified_at"])
